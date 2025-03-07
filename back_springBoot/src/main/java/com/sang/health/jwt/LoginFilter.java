@@ -1,15 +1,20 @@
 package com.sang.health.jwt;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sang.health.dto.CustomUserDetails;
 
 import jakarta.servlet.FilterChain;
@@ -32,18 +37,25 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 
+		try {
 		// 클라이언트 요청에서 username, password 추출
-		String username = obtainUsername(request);
-		String password = obtainPassword(request);
-		
-		System.out.println(username);
+		// JSON 형식의 데이터를 읽고 파싱
+        ObjectMapper objectMapper = new ObjectMapper(); // JSON 데이터 읽기
+        Map<String, String> loginData = objectMapper.readValue(request.getInputStream(), Map.class);
 
-		// 스프링 시큐리티에서 username과 password를 검증하기 위해서는 token에 담아야 함
-		// UsernamePasswordAuthenticationToken : AuthenticationManager에게 주는 DTO 개념
+        // JSON에서 username과 password 추출
+        String username = loginData.get("username");
+        String password = loginData.get("password");
+		
+        // 스프링 시큐리티에서 username과 password를 검증하기 위해서는 token에 담아야 함
+        // UsernamePasswordAuthenticationToken : AuthenticationManager에게 주는 DTO 개념
 		UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
 
 		// token에 담은 검증을 위한 AuthenticationManager로 전달
 		return authenticationManager.authenticate(authToken);
+		} catch (IOException e) {
+	        throw new AuthenticationServiceException("Error parsing login request");
+	    }
 	}
 
 	// 로그인 성공시 실행하는 메소드 (여기서 JWT를 발급하면 됨)
@@ -66,6 +78,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         // 접두사 (HTTP 기본 양식)
         response.addHeader("Authorization", "Bearer " + token);
 		
+        // SecurityContextHolder에 인증 정보 저장
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 	}
 
 	// 로그인 실패시 실행하는 메소드

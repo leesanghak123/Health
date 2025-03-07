@@ -937,6 +937,11 @@
   resolved "https://registry.npmjs.org/@polka/url/-/url-1.0.0-next.28.tgz"
   integrity sha512-8LduaNlMZGwdZ6qWrKlfa+2M4gahzFkprZiAt2TF8uS0qQgBizKXpXURqvTJ4WtmupWxaLqjRb2UCTe72mu+Aw==
 
+"@popperjs/core@^2.11.8":
+  version "2.11.8"
+  resolved "https://registry.npmjs.org/@popperjs/core/-/core-2.11.8.tgz"
+  integrity sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==
+
 "@sideway/address@^4.1.5":
   version "4.1.5"
   resolved "https://registry.npmjs.org/@sideway/address/-/address-4.1.5.tgz"
@@ -1474,7 +1479,7 @@
   optionalDependencies:
     prettier "^1.18.2 || ^2.0.0"
 
-"@vue/devtools-api@^6.6.4":
+"@vue/devtools-api@^6.0.0-beta.11", "@vue/devtools-api@^6.6.4":
   version "6.6.4"
   resolved "https://registry.npmjs.org/@vue/devtools-api/-/devtools-api-6.6.4.tgz"
   integrity sha512-sGhTPMuXqZ1rVOk32RylztWkfXTRhuS7vgAKv0zjqk8gbsHkJ7xfFf+jbySxt7tWObEJwyKaHMikV/WGDiQm8g==
@@ -1983,6 +1988,11 @@ boolbase@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/boolbase/-/boolbase-1.0.0.tgz"
   integrity sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==
+
+bootstrap@^5.3.3:
+  version "5.3.3"
+  resolved "https://registry.npmjs.org/bootstrap/-/bootstrap-5.3.3.tgz"
+  integrity sha512-8HLCdWgyoMguSO9o+aH+iuZ+aht+mzW0u3HIMzVu7Srrpv7EBBxTnrFlSCskwdY1+EOFQSm7uMJhNQHkdPcmjg==
 
 brace-expansion@^1.1.7:
   version "1.1.11"
@@ -3504,11 +3514,13 @@ he@^1.2.0:
   resolved "file:"
   dependencies:
     axios "^1.8.0"
+    bootstrap "^5.3.3"
     core-js "^3.8.3"
     health_vue "file:"
     node-polyfill-webpack-plugin "^4.1.0"
     vue "^3.2.13"
     vue-router "^4.0.3"
+    vuex "^4.0.2"
 
 highlight.js@^10.7.1:
   version "10.7.3"
@@ -6163,7 +6175,7 @@ vue-template-es2015-compiler@^1.9.0:
   resolved "https://registry.npmjs.org/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.9.1.tgz"
   integrity sha512-4gDntzrifFnCEvyoO8PqyJDmguXgVPxKiIxrBKjIowvL9l+N66196+72XVYR8BBf1Uv1Fgt3bGevJ+sEmxfZzw==
 
-vue@*, "vue@^2 || ^3.2.13", vue@^3.2.0, vue@^3.2.13, vue@3.5.13:
+vue@*, "vue@^2 || ^3.2.13", vue@^3.0.2, vue@^3.2.0, vue@^3.2.13, vue@3.5.13:
   version "3.5.13"
   resolved "https://registry.npmjs.org/vue/-/vue-3.5.13.tgz"
   integrity sha512-wmeiSMxkZCSc+PM2w2VRsOYAZC8GdipNFRTsLSfodVqI9mbejKeXEGr8SckuLnrQPGe3oJN5c3K0vpoU9q/wCQ==
@@ -6173,6 +6185,13 @@ vue@*, "vue@^2 || ^3.2.13", vue@^3.2.0, vue@^3.2.13, vue@3.5.13:
     "@vue/runtime-dom" "3.5.13"
     "@vue/server-renderer" "3.5.13"
     "@vue/shared" "3.5.13"
+
+vuex@^4.0.2:
+  version "4.0.2"
+  resolved "https://registry.npmjs.org/vuex/-/vuex-4.0.2.tgz"
+  integrity sha512-M6r8uxELjZIK8kTKDGgZTYX/ahzblnzC4isU1tpmEuOIIKmV+TRdc+H4s8ds2NuZ7wpUTdGRzJRtoj+lI+pc0Q==
+  dependencies:
+    "@vue/devtools-api" "^6.0.0-beta.11"
 
 watchpack@^2.4.0, watchpack@^2.4.1:
   version "2.4.2"

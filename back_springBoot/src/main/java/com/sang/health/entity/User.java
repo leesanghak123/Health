@@ -5,21 +5,58 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Entity
 @Data
 public class User {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@Column(unique = true, nullable = false)
-	private String username;
-	
-	@Column(unique = true, nullable = false)
-	private String password;
+    @Column(unique = true, nullable = false)
+    private String username;
 
-	private String role;
+    @Column(unique = true, nullable = false)
+    @Email(message = "이메일 형식이 올바르지 않습니다")
+    @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$", message = "이메일 형식이 올바르지 않습니다")
+    private String email;
+
+    @Column(nullable = true) // 소셜 로그인은 비밀번호가 없을 수 있음
+    private String password;
+
+    @Column(nullable = false)
+    private String role;
+
+    @Column(nullable = false)
+    private String provider; // "LOCAL", "GOOGLE", "KAKAO" 등
+
+    // 일반 로그인 사용자 생성 팩토리 메서드
+    public static User createLocalUser(String username, String email, String password, String role) {
+        User user = new User();
+        user.username = username;
+        user.email = email;
+        user.password = password;
+        user.role = role;
+        user.provider = "LOCAL";
+        return user;
+    }
+
+    // 소셜 로그인 사용자 생성 팩토리 메서드
+    public static User createSocialUser(String username, String email, String role, String provider) {
+        if ("LOCAL".equals(provider)) {
+            throw new IllegalArgumentException("소셜 로그인에 LOCAL 제공자를 사용할 수 없습니다");
+        }
+        
+        User user = new User();
+        user.username = username;
+        user.email = email;
+        user.password = null;
+        user.role = role;
+        user.provider = provider;
+        return user;
+    }
 }

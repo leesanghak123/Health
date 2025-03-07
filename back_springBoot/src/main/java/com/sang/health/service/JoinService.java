@@ -23,6 +23,8 @@ public class JoinService {
 	public void joinProcess(JoinDto joinDto) {
 		String username = joinDto.getUsername();
 		String password = joinDto.getPassword();
+		String name = joinDto.getName();
+		String email = joinDto.getEmail();
 		
 		Boolean isExist = userRepository.existsByUsername(username);
 		
@@ -31,12 +33,14 @@ public class JoinService {
 			return;
 		}
 		
-		User data = new User();
+		// 팩토리 메서드를 사용하여 User 객체 생성
+        User user = User.createLocalUser(
+            username,
+            email,
+            bCryptPasswordEncoder.encode(password),
+            "ROLE_USER"
+        );
 		
-		data.setUsername(username);
-		data.setPassword(bCryptPasswordEncoder.encode(password));
-		data.setRole("ROLE_USER");  // 접두사 ROLE 작성
-		
-		userRepository.save(data);
+		userRepository.save(user);
 	}
 }
