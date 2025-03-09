@@ -1,5 +1,6 @@
 package com.sang.health.config;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import org.springframework.context.annotation.Bean;
@@ -14,14 +15,17 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+import com.sang.health.jwt.CustomLogoutFilter;
 import com.sang.health.jwt.JWTFilter;
 //import com.sang.health.jwt.JWTFilterCookie;
 import com.sang.health.jwt.JWTUtil;
 import com.sang.health.jwt.LoginFilter;
 import com.sang.health.jwt.OauthCustomSuccessHandler;
+import com.sang.health.repository.RefreshRepository;
 import com.sang.health.service.CustomOAuth2UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,12 +39,14 @@ public class SecurityConfig {
     private final JWTUtil jwtUtil;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OauthCustomSuccessHandler oauthCustomSuccessHandler;
+    private final RefreshRepository refreshRepository;
 
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil, CustomOAuth2UserService customOAuth2UserService, OauthCustomSuccessHandler oauthCustomSuccessHandler) {
+    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil, CustomOAuth2UserService customOAuth2UserService, OauthCustomSuccessHandler oauthCustomSuccessHandler, RefreshRepository refreshRepository) {
     	this.authenticationConfiguration = authenticationConfiguration;
     	this.jwtUtil = jwtUtil;
     	this.customOAuth2UserService = customOAuth2UserService;
     	this.oauthCustomSuccessHandler = oauthCustomSuccessHandler;
+    	this.refreshRepository = refreshRepository;
     }
     
     // AuthenticationManager Bean 등록
@@ -69,11 +75,11 @@ public class SecurityConfig {
 
                 configuration.setAllowedOrigins(Collections.singletonList("http://localhost:8003")); // 허용할 port
                 configuration.setAllowedMethods(Collections.singletonList("*")); // 허용할 method(Get, Post 등)
-                configuration.setAllowCredentials(true); // 자격 증명(예: 쿠키, 인증 헤더) 허용
+                configuration.setAllowCredentials(true); // 자격 증명(예: CORS 도메인 쿠키 전송) 허용
                 configuration.setAllowedHeaders(Collections.singletonList("*")); // 허용할 헤더
                 configuration.setMaxAge(3600L); // 허용을 할 수 있는 시간
 
-				configuration.setExposedHeaders(Collections.singletonList("Authorization")); // Authorization 헤더 허용
+				configuration.setExposedHeaders(Arrays.asList("Authorization", "access", "refresh")); // Authorization 헤더 허용
 
                 return configuration;
             }
@@ -96,7 +102,7 @@ public class SecurityConfig {
 		
 		// 경로별 인가 작업
 		http.authorizeHttpRequests((auth) -> auth
-				.requestMatchers("/", "/login", "/api/auth/*").permitAll()
+				.requestMatchers("/login", "/api/auth/*", "/reissue").permitAll()
 				.requestMatchers("/admin").hasRole("ADMIN")
 				.anyRequest().authenticated());  // 다른 경우: 로그인 한 사용자
 		
@@ -104,7 +110,10 @@ public class SecurityConfig {
 		http.addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
 		
 		// loginFilter
-		http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
+		http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class);
+		
+		// logoutFilter
+		http.addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class);
 		
 		// 세션 설정
 		http.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

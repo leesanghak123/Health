@@ -1,4 +1,3 @@
-<!-- App.vue -->
 <template>
   <div id="app">
     <nav class="navbar navbar-expand-md navbar-light bg-light">
@@ -46,16 +45,29 @@ export default {
   name: 'App',
   data() {
     return {
-      isLoggedIn: !!localStorage.getItem('jwt'),
+      isLoggedIn: !!localStorage.getItem('access'),
     };
   },
   methods: {
     logout() {
-      localStorage.removeItem('jwt');
-      delete axios.defaults.headers.common['Authorization'];
-      this.isLoggedIn = false;
-      this.$router.push('/login');
-    },
+    // 백엔드 로그아웃 API 호출 (리프레시 토큰은 쿠키에 있으므로 별도로 전송할 필요 없음)
+    this.$http.post('/logout')
+      .then(() => {
+        // 성공적으로 로그아웃된 경우
+        localStorage.removeItem('access');
+        delete axios.defaults.headers.common['access'];
+        this.isLoggedIn = false;
+        this.$router.push('/login');
+      })
+      .catch(error => {
+        console.error('로그아웃 중 오류 발생:', error);
+        // 오류가 발생해도 클라이언트 측에서는 토큰을 삭제하고 로그인 페이지로 이동
+        localStorage.removeItem('access');
+        delete axios.defaults.headers.common['access'];
+        this.isLoggedIn = false;
+        this.$router.push('/login');
+      });
+  },
   },
 };
 </script>

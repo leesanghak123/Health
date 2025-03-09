@@ -1,10 +1,12 @@
 package com.sang.health.jwt;
 
 import java.io.IOException;
+import java.sql.Date;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,8 +18,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sang.health.dto.CustomUserDetails;
+import com.sang.health.entity.Refresh;
+import com.sang.health.repository.RefreshRepository;
 
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -26,10 +31,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 	
 	private final AuthenticationManager authenticationManager;
 	private final JWTUtil jwtUtil;
+	private RefreshRepository refreshRepository;
 	
-	public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil) {
+	public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil, RefreshRepository refreshRepository) {
 		this.authenticationManager = authenticationManager;
 		this.jwtUtil = jwtUtil;
+		this.refreshRepository = refreshRepository;
 	}
 
 	// UsernamePasswordAuthenticationFilter로부터 상속 받은 것을 재정의(Override)
@@ -62,26 +69,52 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
 
-		CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+		// 유저 정보
+	    String username = authentication.getName();
 
-        String username = customUserDetails.getUsername();
+	    Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+	    Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
+	    GrantedAuthority auth = iterator.next();
+	    String role = auth.getAuthority();
 
-        // Role 값 뽑아내기
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
-        GrantedAuthority auth = iterator.next();
+	    // 토큰 생성
+	    String access = jwtUtil.createJwt("access", username, role, 6000L); // 10분 (현재 6초)
+	    String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L); // 24시간
 
-        String role = auth.getAuthority();
-
-        String token = jwtUtil.createJwt(username, role, 60*60*10L);
-
-        // 접두사 (HTTP 기본 양식)
-        response.addHeader("Authorization", "Bearer " + token);
-		
-        // SecurityContextHolder에 인증 정보 저장
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+	    //Refresh 토큰 저장
+	    addRefreshEntity(username, refresh, 86400000L);
+	    
+	    // 응답 설정
+	    response.setHeader("access", access);
+	    response.setHeader("Access-Control-Expose-Headers", "access"); // CORS 설정 뚫고 헤더 노출
+	    response.addCookie(createCookie("refresh", refresh));  // 아래 createCookie 메서드를 통해 Cookie 생성
+	    response.setStatus(HttpStatus.OK.value());
 	}
+	
+	// Cookie 생성 메서드 (key, jwt)
+	private Cookie createCookie(String key, String value) {
 
+	    Cookie cookie = new Cookie(key, value);
+	    cookie.setMaxAge(24*60*60);
+	    //cookie.setSecure(true); // https
+	    cookie.setPath("/");
+	    cookie.setHttpOnly(true);
+
+	    return cookie;
+	}
+	
+	private void addRefreshEntity(String username, String refresh, Long expiredMs) {
+
+	    Date date = new Date(System.currentTimeMillis() + expiredMs);
+
+	    Refresh refreshEntity = new Refresh();
+	    refreshEntity.setUsername(username);
+	    refreshEntity.setRefresh(refresh);
+	    refreshEntity.setExpiration(date.toString());
+
+	    refreshRepository.save(refreshEntity);
+	}
+	
 	// 로그인 실패시 실행하는 메소드
 	@Override
 	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {

@@ -24,6 +24,8 @@
 
 <script>
 import axios from 'axios';
+import apiClient from '@/services/reissue';
+
 export default {
   data() {
     return {
@@ -33,60 +35,60 @@ export default {
     };
   },
   mounted() {
-    // URL에 소셜 로그인 파라미터가 있거나 세션 스토리지에 표시가 있는 경우에만 실행
+    // URL에서 social 파라미터 확인 후 소셜 로그인 처리
     const urlParams = new URLSearchParams(window.location.search);
-    const isFromSocialLogin = urlParams.get('social') === 'true' || sessionStorage.getItem('fromSocialLogin');
-    
-    if (isFromSocialLogin) {
-      // 소셜 로그인 표시 제거
-      sessionStorage.removeItem('fromSocialLogin');
-      // URL 파라미터 정리 (선택사항)
-      if (urlParams.get('social')) {
-        const newUrl = window.location.pathname;
-        window.history.replaceState({}, document.title, newUrl);
-      }
-      // 쿠키 확인
-      this.getJWTFromCookie();
+    if (urlParams.get('social') === 'true') {
+      this.getJWTFromRefreshToken();
+      // URL 파라미터 제거 (선택사항)
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, newUrl);
     }
   },
-  methods: {
-    // 소셜 로그인 버튼 클릭 처리
-    handleSocialLogin() {
-      // 소셜 로그인 진행 중임을 표시
-      sessionStorage.setItem('fromSocialLogin', 'true');
-    },
-    
-    // 일반 로그인 (JWT를 로컬 스토리지에 저장)
+  methods: {    
+    // 일반 로그인
     login() {
-      axios.post('http://localhost:8002/login', {
+      // 입력값 검증
+      if (!this.username || !this.password) {
+        this.errorMessage = '아이디와 비밀번호를 모두 입력해주세요.';
+        return;
+      }
+      
+      
+      //axios.post('http://localhost:8002/login', {
+      //  username: this.username,
+      //  password: this.password
+      //})
+      apiClient.post('/login', {
         username: this.username,
         password: this.password
       })
       .then(response => {
-        const token = response.headers['authorization'];
+        const token = response.headers['access'];
+        
         if (token) {
-          const jwt = token.split(' ')[1];
-          localStorage.setItem('jwt', jwt);
-          axios.defaults.headers.common['Authorization'] = `Bearer ${jwt}`;
+          console.log('유효한 토큰이 있음, 저장 및 헤더 설정');
+          // 토큰 저장 (Bearer 접두사 없이)
+          localStorage.setItem('access', token);
+          // 서버 요청 시 access 헤더 사용
+          axios.defaults.headers.common['access'] = token;
           this.$router.push('/');
         } else {
           this.errorMessage = '로그인 중 오류가 발생했습니다.';
         }
       })
-      .catch(() => {
+      .catch(error => {
         this.errorMessage = '아이디 또는 비밀번호가 잘못되었습니다.';
       });
     },
 
     // 소셜 로그인 후 쿠키 기반으로 JWT 요청
-    getJWTFromCookie() {
-      // Body는 null, 쿠키는 포함: withCredentials: true
-      axios.post('http://localhost:8002/api/auth/jwt', {}, { withCredentials: true })
+    getJWTFromRefreshToken() {
+      axios.get('http://localhost:8002/api/auth/jwt', { withCredentials: true })
       .then(response => {
-        const jwt = response.data.jwt;
-        if (jwt) {
-          localStorage.setItem('jwt', jwt);
-          axios.defaults.headers.common['Authorization'] = `Bearer ${jwt}`;
+        const accessToken = response.headers['access'];
+        if (accessToken) {
+          localStorage.setItem('access', accessToken);
+          axios.defaults.headers.common['access'] = accessToken;
           this.$router.push('/');
         }
       })
