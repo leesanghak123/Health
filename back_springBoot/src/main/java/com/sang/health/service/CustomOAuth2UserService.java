@@ -14,6 +14,8 @@ import com.sang.health.dto.UserDTO;
 import com.sang.health.entity.User;
 import com.sang.health.repository.UserRepository;
 
+import jakarta.transaction.Transactional;
+
 // DefaultOAuth2UserService를 상속 받아서 구현
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService{
@@ -26,12 +28,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService{
     }
 	
 	@Override
+	@Transactional
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
 		// 클래스가 가지는 생성자를 super를 통해 불러서 값을 획득
         OAuth2User oAuth2User = super.loadUser(userRequest);
-
-        System.out.println(oAuth2User);
 
         // 출처 확인(google, naver)을 해야한다 -> 서로 응답 값(방식)이 다르기 때문에 Dto를 따로 작성
         String registrationId = userRequest.getClientRegistration().getRegistrationId();

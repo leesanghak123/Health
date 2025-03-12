@@ -1,7 +1,7 @@
 package com.sang.health.jwt;
 
 import java.io.IOException;
-import java.sql.Date;
+import java.util.UUID;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -13,13 +13,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sang.health.dto.CustomUserDetails;
-import com.sang.health.entity.Refresh;
-import com.sang.health.repository.RefreshRepository;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;
@@ -31,12 +27,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 	
 	private final AuthenticationManager authenticationManager;
 	private final JWTUtil jwtUtil;
-	private RefreshRepository refreshRepository;
+	private final RedisUtil redisUtil;
 	
-	public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil, RefreshRepository refreshRepository) {
+	public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil, RedisUtil redisUtil) {
 		this.authenticationManager = authenticationManager;
 		this.jwtUtil = jwtUtil;
-		this.refreshRepository = refreshRepository;
+		this.redisUtil = redisUtil;
 	}
 
 	// UsernamePasswordAuthenticationFilter로부터 상속 받은 것을 재정의(Override)
@@ -71,6 +67,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
 		// 유저 정보
 	    String username = authentication.getName();
+	    String deviceId = UUID.randomUUID().toString();
 
 	    Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 	    Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
@@ -79,43 +76,18 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
 	    // 토큰 생성
 	    String access = jwtUtil.createJwt("access", username, role, 6000L); // 10분 (현재 6초)
-	    String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L); // 24시간
-
-	    //Refresh 토큰 저장
-	    addRefreshEntity(username, refresh, 86400000L);
+	    String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
+	    redisUtil.saveRefreshToken(username+deviceId, refresh, 86400000L);
+	    response.setHeader("access", access);
+	    response.addCookie(jwtUtil.createRefreshTokenCookie(refresh));
+	    
+	    response.addCookie(jwtUtil.createDeviceIdCookie(deviceId));
 	    
 	    // 응답 설정
-	    response.setHeader("access", access);
-	    response.setHeader("Access-Control-Expose-Headers", "access"); // CORS 설정 뚫고 헤더 노출
-	    response.addCookie(createCookie("refresh", refresh));  // 아래 createCookie 메서드를 통해 Cookie 생성
 	    response.setStatus(HttpStatus.OK.value());
 	}
 	
-	// Cookie 생성 메서드 (key, jwt)
-	private Cookie createCookie(String key, String value) {
-
-	    Cookie cookie = new Cookie(key, value);
-	    cookie.setMaxAge(24*60*60);
-	    //cookie.setSecure(true); // https
-	    cookie.setPath("/");
-	    cookie.setHttpOnly(true);
-
-	    return cookie;
-	}
-	
-	private void addRefreshEntity(String username, String refresh, Long expiredMs) {
-
-	    Date date = new Date(System.currentTimeMillis() + expiredMs);
-
-	    Refresh refreshEntity = new Refresh();
-	    refreshEntity.setUsername(username);
-	    refreshEntity.setRefresh(refresh);
-	    refreshEntity.setExpiration(date.toString());
-
-	    refreshRepository.save(refreshEntity);
-	}
-	
-	// 로그인 실패시 실행하는 메소드
+	// 로그인 실패시 실"ㅣ행하는 메소드
 	@Override
 	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
 

@@ -3,7 +3,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Login from '../views/Login.vue'
 import Join from '../views/Join.vue'
 import Board from '../views/Board.vue'
-import { setupAxiosDefaults } from '../services/reissue'; // 경로 수정
+import { setupAxiosDefaults } from '../services/reissue';
+
 // 페이지 경로 상수
 const LOGIN_PATH = '/login';
 const JOIN_PATH = '/join';
@@ -28,7 +29,7 @@ const routes = [
   },
 ]
 
-// 라우터 인스턴스 생성
+// 라우터 인스턴스 생성 (페이지 전환)
 export const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
@@ -46,7 +47,7 @@ router.beforeEach((to, from, next) => {
       next(LOGIN_PATH);
     } else {
       // 토큰이 있으면 axios 설정 업데이트하고 통과
-      setupAxiosDefaults(); // 공통 함수 사용
+      setupAxiosDefaults(); // reissue (access 가져오기 등)
       next();
     }
   } else {

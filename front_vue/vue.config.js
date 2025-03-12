@@ -1,3 +1,4 @@
+// Vue Cli 프로젝트의 빌드 및 개발 환경 설정을 커스터마이징하는 파일
 // @vue/cli-service: Vue CLI 프로젝트에서 기본적인 Webpack 설정을 제공하는 라이브러리
 const { defineConfig } = require('@vue/cli-service')
 

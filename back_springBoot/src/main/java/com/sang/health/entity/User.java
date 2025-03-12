@@ -22,10 +22,10 @@ public class User {
 
     @Column(unique = true, nullable = false)
     @Email(message = "이메일 형식이 올바르지 않습니다")
-    @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$", message = "이메일 형식이 올바르지 않습니다")
+    @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$", message = "이메일 형식이 올바르지 않습니다")  // 이메일 검증 정규 표현식
     private String email;
 
-    @Column(nullable = true) // 소셜 로그인은 비밀번호가 없을 수 있음
+    @Column(nullable = true) // 소셜 로그인은 비밀번호
     private String password;
 
     @Column(nullable = false)

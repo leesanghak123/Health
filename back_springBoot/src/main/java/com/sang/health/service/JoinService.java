@@ -23,12 +23,11 @@ public class JoinService {
 	public void joinProcess(JoinDto joinDto) {
 		String username = joinDto.getUsername();
 		String password = joinDto.getPassword();
-		String name = joinDto.getName();
 		String email = joinDto.getEmail();
 		
 		Boolean isExist = userRepository.existsByUsername(username);
 		
-		// 회원가입이 안된 경우
+		// 회원가입이 된 경우
 		if(isExist) {
 			return;
 		}

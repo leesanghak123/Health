@@ -39,7 +39,7 @@ export default {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('social') === 'true') {
       this.getJWTFromRefreshToken();
-      // URL 파라미터 제거 (선택사항)
+      // URL 파라미터 제거
       const newUrl = window.location.pathname;
       window.history.replaceState({}, document.title, newUrl);
     }
@@ -52,16 +52,11 @@ export default {
         this.errorMessage = '아이디와 비밀번호를 모두 입력해주세요.';
         return;
       }
-      
-      
-      //axios.post('http://localhost:8002/login', {
-      //  username: this.username,
-      //  password: this.password
-      //})
+       
       apiClient.post('/login', {
         username: this.username,
         password: this.password
-      })
+      }, { withCredentials: true })  // 로그인 시 쿠키 포함 (Refresh 토큰 저장 목적)
       .then(response => {
         const token = response.headers['access'];
         

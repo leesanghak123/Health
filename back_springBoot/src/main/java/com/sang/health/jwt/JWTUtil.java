@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Jwts;
+import jakarta.servlet.http.Cookie;
 
 // @Component : Spring IoC Container에서 클래스를 관리할 수 있게 해준다.
 // Service, Controller 등은 Component의 하위 어노테이션
@@ -61,5 +62,28 @@ public class JWTUtil {
                 .signWith(secretKey)
                 .compact();
         return jwt;
+    }
+
+
+    // 리프레시 토큰 쿠키 생성
+    public Cookie createRefreshTokenCookie(String refreshToken) {
+        Cookie cookie = new Cookie("refresh", refreshToken);
+        cookie.setMaxAge(24*60*60); // 24시간
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        //cookie.setSecure(true); // HTTPS 환경에서는 활성화
+        
+        return cookie;
+    }
+    
+    // deviceId 쿠키 생성
+    public Cookie createDeviceIdCookie(String deviceId) {
+        Cookie cookie = new Cookie("deviceId", deviceId);
+        cookie.setMaxAge(24*60*60);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        
+        return cookie;
     }
 }

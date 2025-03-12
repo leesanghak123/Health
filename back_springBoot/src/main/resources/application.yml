@@ -14,6 +14,11 @@ spring:
     username: health
     password: sang0412
     
+  data:
+    redis:
+      host: localhost
+      port: 6379
+    
   jpa:
     open-in-view: true
     hibernate:

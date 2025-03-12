@@ -2,7 +2,6 @@ package com.sang.health.jwt;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -87,7 +86,6 @@ public class JWTFilter extends OncePerRequestFilter {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             PrintWriter writer = response.getWriter(); // 특정 에러 반환 시 프론트에서 /reissue를 하기 위함
             writer.print("{\"error\":\"TOKEN_EXPIRED\",\"message\":\"Access token has expired\"}");
-            System.out.println("토큰 만료 응답 전송: {\"error\":\"TOKEN_EXPIRED\",\"message\":\"Access token has expired\"}");
             return;
         } catch (Exception e) {
             // 기타 예외 발생 시

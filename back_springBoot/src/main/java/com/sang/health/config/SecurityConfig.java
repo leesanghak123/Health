@@ -6,26 +6,22 @@ import java.util.Collections;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.oauth2.client.OAuth2LoginConfigurer.UserInfoEndpointConfig;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
-import com.sang.health.jwt.CustomLogoutFilter;
+import com.sang.health.jwt.CustomLogoutHandler;
 import com.sang.health.jwt.JWTFilter;
-//import com.sang.health.jwt.JWTFilterCookie;
 import com.sang.health.jwt.JWTUtil;
 import com.sang.health.jwt.LoginFilter;
 import com.sang.health.jwt.OauthCustomSuccessHandler;
-import com.sang.health.repository.RefreshRepository;
+import com.sang.health.jwt.RedisUtil;
 import com.sang.health.service.CustomOAuth2UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,14 +35,16 @@ public class SecurityConfig {
     private final JWTUtil jwtUtil;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OauthCustomSuccessHandler oauthCustomSuccessHandler;
-    private final RefreshRepository refreshRepository;
+    private final CustomLogoutHandler customLogoutHandler;
+    private final RedisUtil redisUtil;
 
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil, CustomOAuth2UserService customOAuth2UserService, OauthCustomSuccessHandler oauthCustomSuccessHandler, RefreshRepository refreshRepository) {
+    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil, CustomOAuth2UserService customOAuth2UserService, OauthCustomSuccessHandler oauthCustomSuccessHandler, CustomLogoutHandler customLogoutHandler, RedisUtil redisUtil) {
     	this.authenticationConfiguration = authenticationConfiguration;
     	this.jwtUtil = jwtUtil;
     	this.customOAuth2UserService = customOAuth2UserService;
     	this.oauthCustomSuccessHandler = oauthCustomSuccessHandler;
-    	this.refreshRepository = refreshRepository;
+    	this.customLogoutHandler = customLogoutHandler;
+    	this.redisUtil = redisUtil;
     }
     
     // AuthenticationManager Bean 등록
@@ -106,14 +104,20 @@ public class SecurityConfig {
 				.requestMatchers("/admin").hasRole("ADMIN")
 				.anyRequest().authenticated());  // 다른 경우: 로그인 한 사용자
 		
-		// LoginFilter 이전에 수행하도록 등록
+		// jwtFilter: LoginFilter 이전에 수행하도록 등록
 		http.addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
 		
 		// loginFilter
-		http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class);
+		http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, redisUtil), UsernamePasswordAuthenticationFilter.class);
 		
-		// logoutFilter
-		http.addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class);
+		// logoutHandler
+		http.logout(logout -> logout
+                .logoutUrl("/logout")
+                .addLogoutHandler(customLogoutHandler)
+                .logoutSuccessHandler((request, response, authentication) -> {
+                    response.setStatus(200);
+                })
+                .permitAll());
 		
 		// 세션 설정
 		http.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

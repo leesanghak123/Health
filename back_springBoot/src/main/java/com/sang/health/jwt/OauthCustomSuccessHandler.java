@@ -1,7 +1,7 @@
 package com.sang.health.jwt;
 
 import java.io.IOException;
-import java.sql.Date;
+import java.util.UUID;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -10,26 +10,24 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import com.sang.health.dto.CustomOAuth2User;
-import com.sang.health.entity.Refresh;
-import com.sang.health.repository.RefreshRepository;
-
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 
 @Component
 public class OauthCustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
 	private final JWTUtil jwtUtil;
-	private RefreshRepository refreshRepository;
+	private final RedisUtil redisUtil;
 
-	public OauthCustomSuccessHandler(JWTUtil jwtUtil, RefreshRepository refreshRepository) {
+	public OauthCustomSuccessHandler(JWTUtil jwtUtil, RedisUtil redisUtil) {
 		this.jwtUtil = jwtUtil;
-		this.refreshRepository = refreshRepository;
+		this.redisUtil = redisUtil;
 	}
 
 	@Override
+	@Transactional
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
 
 		String username = authentication.getName();
@@ -38,33 +36,15 @@ public class OauthCustomSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 	    Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
 	    GrantedAuthority auth = iterator.next();
 	    String role = auth.getAuthority();
+	    
+	    String deviceId = UUID.randomUUID().toString();
 
 	    // 토큰 생성 (refresh Token만)
-	    String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L); // 24시간
+	    String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
+	    redisUtil.saveRefreshToken(username+deviceId, refresh, 86400000L);
+	    response.addCookie(jwtUtil.createDeviceIdCookie(deviceId));
 
-	    //Refresh 토큰 저장
-	    addRefreshEntity(username, refresh, 86400000L);
-	    
-		// JWT를 HttpOnly 쿠키에 담아서 전달 (쿠키 이름 "jwt" 유지)
-		Cookie cookie = new Cookie("refresh", refresh);
-		cookie.setHttpOnly(true); // 자바스크립트에서 접근 불가
-		// cookie.setSecure(true); // HTTPS에서만 전송
-		cookie.setPath("/"); // 전체 도메인에서 접근 가능
-		cookie.setMaxAge(60 * 60 * 10); // 10시간(줄이자)
-
-		response.addCookie(cookie); // 쿠키를 응답에 추가
+	    response.addCookie(jwtUtil.createRefreshTokenCookie(refresh));
 		response.sendRedirect("http://localhost:8003/login?social=true"); // social 파라미터 추가
-	}
-	
-	private void addRefreshEntity(String username, String refresh, Long expiredMs) {
-
-	    Date date = new Date(System.currentTimeMillis() + expiredMs);
-
-	    Refresh refreshEntity = new Refresh();
-	    refreshEntity.setUsername(username);
-	    refreshEntity.setRefresh(refresh);
-	    refreshEntity.setExpiration(date.toString());
-
-	    refreshRepository.save(refreshEntity);
 	}
 }

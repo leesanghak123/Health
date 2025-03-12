@@ -3,6 +3,7 @@
     <nav class="navbar navbar-expand-md navbar-light bg-light">
       <div class="container-fluid">
         <a class="navbar-brand" href="/">Health</a>
+        <!-- 반응형 nav -->
         <button
           class="navbar-toggler"
           type="button"
@@ -51,7 +52,7 @@ export default {
   methods: {
     logout() {
     // 백엔드 로그아웃 API 호출 (리프레시 토큰은 쿠키에 있으므로 별도로 전송할 필요 없음)
-    this.$http.post('/logout')
+    this.$http.post('/logout', {}, { withCredentials: true })  // Refresh tokrn 삭제 땜시
       .then(() => {
         // 성공적으로 로그아웃된 경우
         localStorage.removeItem('access');
