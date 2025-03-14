@@ -1,10 +1,10 @@
-package com.sang.health.service;
+package com.sang.health.service.user;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sang.health.dto.JoinDto;
+import com.sang.health.dto.user.JoinDto;
 import com.sang.health.entity.User;
 import com.sang.health.repository.UserRepository;
 

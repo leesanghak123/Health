@@ -4,13 +4,13 @@
         <h3 class="card-title text-center mb-4">회원가입</h3>
         <form @submit.prevent="register">
           <div class="form-group">
-            <input type="text" v-model="username" class="form-control" placeholder="아이디" id="username" required />
+            <input type="text" v-model="username" class="form-control" placeholder="아이디" id="username" autocomplete="username" required />
           </div>
           <div class="form-group">
-            <input type="password" v-model="password" class="form-control" placeholder="비밀번호" id="password" required />
+            <input type="password" v-model="password" class="form-control" placeholder="비밀번호" id="password" autocomplete="current-password" required />
           </div>
           <div class="form-group">
-            <input type="email" v-model="email" class="form-control" placeholder="이메일" id="email" required />
+            <input type="email" v-model="email" class="form-control" placeholder="이메일" id="email" autocomplete="email" required />
           </div>
           <div class="text-end"> <!-- 오른쪽 정렬 -->
             <button type="submit" id="btn-save" class="btn btn-success w-100">가입하기</button>

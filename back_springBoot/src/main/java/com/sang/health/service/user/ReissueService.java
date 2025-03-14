@@ -1,4 +1,4 @@
-package com.sang.health.service;
+package com.sang.health.service.user;
 
 import java.util.HashMap;
 import java.util.Map;

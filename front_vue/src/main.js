@@ -4,6 +4,8 @@ import App from './App.vue'
 import router from './router'
 import apiClient from './services/reissue';
 
+import $ from 'jquery';
+window.$ = window.jQuery = $;
 import 'bootstrap/dist/css/bootstrap.min.css'; // 부트스트랩 CSS
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'; // 부트스트랩 JavaScript
 import axios from "axios";

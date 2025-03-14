@@ -1,4 +1,4 @@
-package com.sang.health.service;
+package com.sang.health.service.user;
 
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -6,11 +6,11 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import com.sang.health.dto.CustomOAuth2User;
-import com.sang.health.dto.GoogleResponse;
-import com.sang.health.dto.NaverResponse;
-import com.sang.health.dto.OAuth2Response;
-import com.sang.health.dto.UserDTO;
+import com.sang.health.dto.user.CustomOAuth2User;
+import com.sang.health.dto.user.GoogleResponse;
+import com.sang.health.dto.user.NaverResponse;
+import com.sang.health.dto.user.OAuth2Response;
+import com.sang.health.dto.user.UserDTO;
 import com.sang.health.entity.User;
 import com.sang.health.repository.UserRepository;
 
@@ -60,7 +60,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService{
         String email = oAuth2Response.getEmail();
         String provider = oAuth2Response.getProvider().toUpperCase();
         
-        User existData = userRepository.findByUsername(username);
+        User existData = userRepository.findByUsername(username).orElse(null);
 
         // 소셜ID가 존재하지 않는 경우 - 새 사용자 생성
         if (existData == null) {

@@ -1,4 +1,4 @@
-package com.sang.health.dto;
+package com.sang.health.dto.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;

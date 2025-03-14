@@ -1,10 +1,14 @@
 package com.sang.health.entity;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
@@ -21,7 +25,6 @@ public class User {
     private String username;
 
     @Column(unique = true, nullable = false)
-    @Email(message = "이메일 형식이 올바르지 않습니다")
     @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$", message = "이메일 형식이 올바르지 않습니다")  // 이메일 검증 정규 표현식
     private String email;
 
@@ -32,7 +35,10 @@ public class User {
     private String role;
 
     @Column(nullable = false)
-    private String provider; // "LOCAL", "GOOGLE", "KAKAO" 등
+    private String provider; // "LOCAL", "GOOGLE"
+    
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Board> boards;
 
     // 일반 로그인 사용자 생성 팩토리 메서드
     public static User createLocalUser(String username, String email, String password, String role) {

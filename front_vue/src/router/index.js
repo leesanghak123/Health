@@ -3,19 +3,24 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Login from '../views/Login.vue'
 import Join from '../views/Join.vue'
 import Board from '../views/Board.vue'
+import BoardWrite from '../views/BoardWrite.vue'
+import BoardDetail from '../views/BoardDetail.vue';
+import BoardUpdate from '../views/BoardUpdate.vue';
 import { setupAxiosDefaults } from '../services/reissue';
 
 // 페이지 경로 상수
 const LOGIN_PATH = '/login';
 const JOIN_PATH = '/join';
 const BOARD_PATH = '/';
+const BOARD_WRITE_PATH = '/board/write'
+const BOARD_DETAIL_PATH = '/board/detail'
+const BOARD_UPDATE_PATH = '/board/update'
 
 const routes = [
   {
     path: BOARD_PATH,
     name: 'board',
     component: Board,
-    meta: { requiresAuth: true }
   },
   {
     path: LOGIN_PATH,
@@ -26,6 +31,24 @@ const routes = [
     path: JOIN_PATH,
     name: 'join',
     component: Join
+  },
+  {
+  path: BOARD_WRITE_PATH,
+  name: 'boardWrite',
+  component: BoardWrite,
+  meta: { requiresAuth: true }
+  },
+  {
+  path: `${BOARD_DETAIL_PATH}/:id`,
+  name: 'boardDetail',
+  component: BoardDetail,
+  meta: { requiresAuth: true }
+  },
+  {
+    path: `${BOARD_UPDATE_PATH}/:id`,
+    name: 'boardUpdate',
+    component: BoardUpdate,
+    meta: { requiresAuth: true }
   },
 ]
 

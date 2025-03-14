@@ -1,4 +1,4 @@
-package com.sang.health.controller;
+package com.sang.health.controller.user;
 
 import java.util.Map;
 
@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sang.health.service.ReissueService;
+import com.sang.health.service.user.ReissueService;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

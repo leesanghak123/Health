@@ -3513,11 +3513,14 @@ he@^1.2.0:
   version "0.1.0"
   resolved "file:"
   dependencies:
+    "@popperjs/core" "^2.11.8"
     axios "^1.8.0"
     bootstrap "^5.3.3"
     core-js "^3.8.3"
     health_vue "file:"
+    jquery "^3.7.1"
     node-polyfill-webpack-plugin "^4.1.0"
+    summernote "^0.9.1"
     vue "^3.2.13"
     vue-router "^4.0.3"
     vuex "^4.0.2"
@@ -3913,6 +3916,11 @@ joi@^17.4.0:
     "@sideway/address" "^4.1.5"
     "@sideway/formula" "^3.0.1"
     "@sideway/pinpoint" "^2.0.0"
+
+jquery@^3.7.1:
+  version "3.7.1"
+  resolved "https://registry.npmjs.org/jquery/-/jquery-3.7.1.tgz"
+  integrity sha512-m4avr8yL8kmFN8psrbFFFmB/If14iN5o9nw/NgnnM+kybDJpRsAynV2BsfpTYrTRysYUdADVD7CkUUizgkpLfg==
 
 js-message@1.0.7:
   version "1.0.7"
@@ -5868,6 +5876,11 @@ stylehacks@^5.1.1:
   dependencies:
     browserslist "^4.21.4"
     postcss-selector-parser "^6.0.4"
+
+summernote@^0.9.1:
+  version "0.9.1"
+  resolved "https://registry.npmjs.org/summernote/-/summernote-0.9.1.tgz"
+  integrity sha512-5Hfuey6+N0XIbk8ZpkGEVDmrkRVRHZWKBhw/072i9/TJLaWUKboB+KOyyd6AzDP2CQs1O6or4zRTU8HY30kt4w==
 
 supports-color@^5.3.0:
   version "5.5.0"

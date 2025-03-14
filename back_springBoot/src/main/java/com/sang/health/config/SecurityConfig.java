@@ -22,7 +22,7 @@ import com.sang.health.jwt.JWTUtil;
 import com.sang.health.jwt.LoginFilter;
 import com.sang.health.jwt.OauthCustomSuccessHandler;
 import com.sang.health.jwt.RedisUtil;
-import com.sang.health.service.CustomOAuth2UserService;
+import com.sang.health.service.user.CustomOAuth2UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -100,7 +100,7 @@ public class SecurityConfig {
 		
 		// 경로별 인가 작업
 		http.authorizeHttpRequests((auth) -> auth
-				.requestMatchers("/login", "/api/auth/*", "/reissue").permitAll()
+				.requestMatchers("/login", "/api/auth/*", "/reissue", "/board").permitAll()
 				.requestMatchers("/admin").hasRole("ADMIN")
 				.anyRequest().authenticated());  // 다른 경우: 로그인 한 사용자
 		

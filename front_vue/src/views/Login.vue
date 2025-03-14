@@ -4,10 +4,10 @@
       <h3 class="card-title text-center mb-4">로그인</h3>
       <form @submit.prevent="login">
         <div class="form-group">
-          <input type="text" v-model="username" class="form-control" placeholder="아이디" required />
+          <input type="text" v-model="username" class="form-control" placeholder="아이디" autocomplete="username" required />
         </div>
         <div class="form-group">
-          <input type="password" v-model="password" class="form-control" placeholder="비밀번호" required />
+          <input type="password" v-model="password" class="form-control" placeholder="비밀번호" autocomplete="current-password" required />
         </div>
         <div class="text-end">
           <button type="submit" class="btn btn-primary w-100">로그인</button>
@@ -66,7 +66,7 @@ export default {
           localStorage.setItem('access', token);
           // 서버 요청 시 access 헤더 사용
           axios.defaults.headers.common['access'] = token;
-          this.$router.push('/');
+          window.location.href = '/'; // 새로고침
         } else {
           this.errorMessage = '로그인 중 오류가 발생했습니다.';
         }
@@ -84,7 +84,7 @@ export default {
         if (accessToken) {
           localStorage.setItem('access', accessToken);
           axios.defaults.headers.common['access'] = accessToken;
-          this.$router.push('/');
+          window.location.href = '/'; // 새로고침
         }
       })
       .catch(error => {

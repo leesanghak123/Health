@@ -1,4 +1,4 @@
-package com.sang.health.dto;
+package com.sang.health.dto.user;
 
 public interface OAuth2Response {
 

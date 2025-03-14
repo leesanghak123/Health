@@ -1,4 +1,4 @@
-package com.sang.health.controller;
+package com.sang.health.controller.user;
 
 import java.util.Map;
 import org.springframework.http.HttpHeaders;
