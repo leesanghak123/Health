@@ -64,14 +64,14 @@ export default {
           localStorage.removeItem('access');
           delete axios.defaults.headers.common['access'];
           this.isLoggedIn = false;
-          this.$router.push('/login');
+          window.location.href = '/login';
         })
         .catch(error => {
           console.error('로그아웃 중 오류 발생:', error);
           localStorage.removeItem('access');
           delete axios.defaults.headers.common['access'];
           this.isLoggedIn = false;
-          this.$router.push('/login');
+          window.location.href = '/login';
         });
     },
   },

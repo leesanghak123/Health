@@ -7,7 +7,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import com.sang.health.jwt.JWTUtil;
-import com.sang.health.jwt.RedisUtil;
+import com.sang.health.redis.RedisUtil;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;

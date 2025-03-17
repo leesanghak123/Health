@@ -21,7 +21,7 @@ import com.sang.health.jwt.JWTFilter;
 import com.sang.health.jwt.JWTUtil;
 import com.sang.health.jwt.LoginFilter;
 import com.sang.health.jwt.OauthCustomSuccessHandler;
-import com.sang.health.jwt.RedisUtil;
+import com.sang.health.redis.RedisUtil;
 import com.sang.health.service.user.CustomOAuth2UserService;
 
 import jakarta.servlet.http.HttpServletRequest;

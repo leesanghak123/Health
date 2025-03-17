@@ -2,6 +2,7 @@ package com.sang.health.entity;
 
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -37,7 +38,7 @@ public class User {
     @Column(nullable = false)
     private String provider; // "LOCAL", "GOOGLE"
     
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Board> boards;
 
     // 일반 로그인 사용자 생성 팩토리 메서드

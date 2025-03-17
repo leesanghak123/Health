@@ -1,5 +1,8 @@
 package com.sang.health.controller.board;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -38,10 +41,18 @@ public class BoardController {
 	}
 	
 	@GetMapping("")
-	public ResponseEntity<Page<BoardFindDto>> findPage(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+	public ResponseEntity<?> findPage(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
 		
 		Page<BoardFindDto> boards = boardService.글목록(pageable);
-		return ResponseEntity.ok(boards);
+		
+		Map<String, Object> response = new HashMap<>();
+	    response.put("content", boards.getContent());
+	    response.put("pageNumber", boards.getNumber());
+	    response.put("pageSize", boards.getSize());
+	    response.put("totalElements", boards.getTotalElements());
+	    response.put("totalPages", boards.getTotalPages());
+		
+		return ResponseEntity.ok(response);
 	}
 	
 	@PostMapping("/write")

@@ -34,17 +34,14 @@ public class JWTFilter extends OncePerRequestFilter {
     	// "/reissue" 요청은 필터에서 제외
         if (request.getRequestURI().equals("/reissue")) {
             filterChain.doFilter(request, response);
-            System.out.println("1");
             return;
         }
     	
-        System.out.println("2");
     	// 토큰 획득 시도 (헤더 또는 쿠키에서)
         String token = extractToken(request);
 
         // 토큰이 없다면 다음 필터로 넘김 (권한이 필요없는 부분 요청일 수도 있기 때문)
         if (token == null) {
-        	System.out.println("3");
             filterChain.doFilter(request, response);
             return;
         }
@@ -52,7 +49,6 @@ public class JWTFilter extends OncePerRequestFilter {
         try {
             // 토큰 유효성 및 만료 확인
             jwtUtil.isExpired(token);
-            System.out.println("4");
             
             // 토큰 종류 확인 (access 또는 refresh)
             String category = jwtUtil.getCategory(token);
@@ -70,7 +66,6 @@ public class JWTFilter extends OncePerRequestFilter {
                 } else {
                     // 다른 API에서는 refresh 토큰으로 직접 인증 불가
                     PrintWriter writer = response.getWriter();
-                    System.out.println("5");
                     writer.print("Access token required");
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     return;
@@ -78,7 +73,6 @@ public class JWTFilter extends OncePerRequestFilter {
             }
             // 토큰 종류가 올바르지 않은 경우
             else {
-            	System.out.println("6");
                 PrintWriter writer = response.getWriter();
                 writer.print("Invalid token category");
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
