@@ -5,6 +5,7 @@
     <div class="board-detail-meta">
     <p>작성자: {{ truncateUsername(board.username) }}</p>
     <p>작성일: {{ formatDate(board.createDate) }}</p>
+    <p>조회수: {{ board.count }}</p>
     <p>추천수: {{ board.likeCnt }}</p>
     
     <button @click="likePost" class="like-button">
