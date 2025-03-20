@@ -8,6 +8,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import com.sang.health.entity.BoardCount;
+import com.sang.health.entity.BoardLike;
+import com.sang.health.entity.BoardLikeTotal;
 
 @Component
 public class RedisUtil {
@@ -42,6 +44,8 @@ public class RedisUtil {
     public boolean hasKey(String key) {
         return Boolean.TRUE.equals(redisTemplate.hasKey(key));
     }
+    
+    
     
     // 조회수
     // 새 게시글이 작성되는 경우 (개별 저장)
@@ -97,5 +101,93 @@ public class RedisUtil {
         
         // 키가 이미 존재하면 조회수 증가 불가
         return false;
+    }
+    
+    // 무분별한 조회수 방지 삭제
+    public void deletecanIncrementView(String username, Long boardId) {
+        String key = "view:" + username + ":" + boardId;
+        redisTemplate.delete(key);
+    }
+    
+    
+    
+    // 추천수
+    // 새 게시글이 작성되는 경우 초기화
+    public void saveBoardLikeTotal(Long boardId) {
+    	String key = "board:like:total:" + boardId;
+    	redisTemplate.opsForValue().set(key, "0");
+    }
+    
+    // 게시글 총 추천수 삭제
+    public void deleteBoardLikeTotal(Long boardId) {
+        String key = "board:like:total:" + boardId;
+        redisTemplate.delete(key);
+    }
+    
+    // 총 추천수 조회
+    public int getBoardLikeTotal(Long boardId) {
+    	String key = "board:like:total:" + boardId;
+    	String value = redisTemplate.opsForValue().get(key);
+    	return value != null ? Integer.parseInt(value) : 0;
+    }
+    
+    // 게시글 총 추천수 증가
+    public void incrementBoardLike(Long boardId) {
+        String key = "board:like:total:" + boardId;
+        redisTemplate.opsForValue().increment(key, 1);
+    }
+    
+    // 게시글 총 추천수 감소
+    public void decrementBoardLike(Long boardId) {
+        String key = "board:like:total:" + boardId;
+        Long currentValue = redisTemplate.opsForValue().increment(key, -1);
+        
+        // 음수 방지
+        if (currentValue != null && currentValue < 0) {
+            redisTemplate.opsForValue().set(key, "0");
+        }
+    }
+    
+    // 모든 게시글 추천수 저장
+    public void loadAllBoardLikeTotal(List<BoardLikeTotal> boards) {
+        for (BoardLikeTotal board : boards) {
+        	String key = "board:like:total:" + board.getBoardId();
+        	// 이미 등록된 경우 스킵
+        	redisTemplate.opsForValue().set(key, String.valueOf(board.getLikeTotal()));
+        }
+    }
+    
+    // 사용자 추천 여부 확인
+    public boolean getBoardLike(Long boardId, String username) {
+        String key = "board:like:" + boardId + ":" + username;
+        return Boolean.TRUE.equals(redisTemplate.hasKey(key));
+    }
+    
+    // 사용자 추천 생성
+    public void createBoardLike(Long boardId, String username) {
+        String key = "board:like:" + boardId + ":" + username;
+        redisTemplate.opsForValue().set(key, "1");
+    }
+    
+    // 사용자 좋아요 삭제
+    public void deleteBoardLike(Long boardId, String username) {
+        String key = "board:like:" + boardId + ":" + username;
+        redisTemplate.delete(key);
+    }
+    
+    // 특정 게시글의 모든 추천 삭제
+    public void deleteBoardLike(Long boardId) {
+        String pattern = "board:like:" + boardId + ":*";
+        Set<String> keys = redisTemplate.keys(pattern);
+        if (keys != null && !keys.isEmpty()) {
+            redisTemplate.delete(keys);
+        }
+    }
+    
+    // 사용자 추천 정보 로드
+    public void loadAllBoardLikes(List<BoardLike> allBoardLikes) {
+        for (BoardLike like : allBoardLikes) {
+            createBoardLike(like.getBoardId(), like.getUsername());
+        }
     }
 }

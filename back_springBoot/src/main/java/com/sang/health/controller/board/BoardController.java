@@ -94,4 +94,22 @@ public class BoardController {
 		boardService.글삭제(id, username);
 		return ResponseEntity.status(HttpStatus.OK).body("글 삭제 완료");
 	}
+	
+	@PostMapping("/{id}/like")
+	public ResponseEntity<?> likeBoard(@PathVariable Long id, @RequestHeader("access") String token) {
+		
+		String username = jwtUtil.getUsername(token);
+		
+		boardService.추천추가(id, username);
+		return ResponseEntity.status(HttpStatus.OK).body("추천 완료");
+	}
+	
+	@DeleteMapping("{id}/like")
+	public ResponseEntity<?> unlikeBoard(@PathVariable Long id, @RequestHeader("access") String token) {
+		
+		String username = jwtUtil.getUsername(token);
+		
+		boardService.추천삭제(id, username);
+		return ResponseEntity.status(HttpStatus.OK).body("추천 삭제 완료");
+	}
 }

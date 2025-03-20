@@ -18,7 +18,6 @@ import lombok.Data;
 
 @Entity
 @Data
-@BatchSize(size = 10)
 public class User {
 
     @Id
@@ -42,6 +41,7 @@ public class User {
     private String provider; // "LOCAL", "GOOGLE"
     
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @BatchSize(size = 10)
     private List<Board> boards;
 
     // 일반 로그인 사용자 생성 팩토리 메서드

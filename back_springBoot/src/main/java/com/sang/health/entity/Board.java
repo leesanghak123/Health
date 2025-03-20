@@ -28,8 +28,6 @@ public class Board {
 	@Column(nullable = false, columnDefinition = "longtext")
 	private String content;
 	
-	private int likeCnt;
-	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "userId", nullable = false)
 	private User user;

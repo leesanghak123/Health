@@ -25,7 +25,6 @@ public class ViewCountSchedulService {
     }
     
 	@Scheduled(fixedRate = 60000) // 1분
-	@Transactional
 	public void ViewCountToDB() {
 		
 		Set<String> keys = redisUtil.getKeysWithPattern("board:view:*");
