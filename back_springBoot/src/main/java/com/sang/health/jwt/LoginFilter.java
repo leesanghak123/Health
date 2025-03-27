@@ -19,7 +19,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sang.health.redis.RedisUtil;
 
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -84,11 +83,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 	    
 	    response.addCookie(jwtUtil.createDeviceIdCookie(deviceId));
 	    
+	    System.out.println("로그인 : ");
+	    
 	    // 응답 설정
 	    response.setStatus(HttpStatus.OK.value());
 	}
 	
-	// 로그인 실패시 실"ㅣ행하는 메소드
+	// 로그인 실패시 실행하는 메소드
 	@Override
 	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
 

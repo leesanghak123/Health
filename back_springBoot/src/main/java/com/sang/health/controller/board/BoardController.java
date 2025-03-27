@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sang.health.dto.board.BoardDetailDto;
@@ -111,5 +112,53 @@ public class BoardController {
 		
 		boardService.추천삭제(id, username);
 		return ResponseEntity.status(HttpStatus.OK).body("추천 삭제 완료");
+	}
+	
+	@GetMapping("/api/auth/search/title")
+	public ResponseEntity<?> searchByTitle(
+			@RequestParam String title, 
+			@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+		Page<BoardFindDto> results = boardService.제목찾기(title, pageable);
+		
+		Map<String, Object> response = new HashMap<>();
+	    response.put("content", results.getContent());
+	    response.put("pageNumber", results.getNumber());
+	    response.put("pageSize", results.getSize());
+	    response.put("totalElements", results.getTotalElements());
+	    response.put("totalPages", results.getTotalPages());
+	    
+		return ResponseEntity.ok(response);
+	}
+	
+	@GetMapping("/api/auth/search/content")
+	public ResponseEntity<?> searchByContent(
+			@RequestParam String content, 
+			@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+		Page<BoardFindDto> results = boardService.내용찾기(content, pageable);
+
+		Map<String, Object> response = new HashMap<>();
+	    response.put("content", results.getContent());
+	    response.put("pageNumber", results.getNumber());
+	    response.put("pageSize", results.getSize());
+	    response.put("totalElements", results.getTotalElements());
+	    response.put("totalPages", results.getTotalPages());
+	    
+		return ResponseEntity.ok(response);
+	}
+	
+	@GetMapping("/api/auth/search")
+	public ResponseEntity<?> searchByTitleOrContent(
+			@RequestParam String keyword, 
+			@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+		Page<BoardFindDto> results = boardService.제목내용찾기(keyword, pageable);
+
+		Map<String, Object> response = new HashMap<>();
+	    response.put("content", results.getContent());
+	    response.put("pageNumber", results.getNumber());
+	    response.put("pageSize", results.getSize());
+	    response.put("totalElements", results.getTotalElements());
+	    response.put("totalPages", results.getTotalPages());
+	    
+		return ResponseEntity.ok(response);
 	}
 }

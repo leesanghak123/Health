@@ -50,6 +50,13 @@ apiClient.interceptors.response.use(
 
         console.log("토큰 재발급 응답:", response);
 
+        console.log('재발급 요청 전체 정보:', {
+          status: response.status,
+          headers: response.headers,
+          cookies: document.cookie,
+          data: response.data
+        });
+
         // 응답 헤더에서 새 액세스 토큰 가져오기
         const newAccessToken = response.headers.access;
         console.log("새 액세스 토큰:", newAccessToken);
@@ -75,7 +82,7 @@ apiClient.interceptors.response.use(
         
         // 리프레시 토큰도 만료된 경우 로그인 페이지로 리다이렉트
         router.push('/login'); // 라우터 사용
-        
+
         // Error 객체로 변환하여 반환
         if (refreshError instanceof Error) {
           return Promise.reject(refreshError);

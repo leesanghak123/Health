@@ -100,7 +100,7 @@ public class SecurityConfig {
 		
 		// 경로별 인가 작업
 		http.authorizeHttpRequests((auth) -> auth
-				.requestMatchers("/login", "/api/auth/*", "/reissue", "/board").permitAll()
+				.requestMatchers("/login", "/api/auth/*", "/reissue", "/board", "/board/api/auth/**").permitAll()
 				.requestMatchers("/admin").hasRole("ADMIN")
 				.anyRequest().authenticated());  // 다른 경우: 로그인 한 사용자
 		

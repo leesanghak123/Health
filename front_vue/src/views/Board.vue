@@ -6,6 +6,22 @@
       <button @click="goToWritePage" class="btn btn-write">글쓰기</button>
     </div>
 
+    <div class="search-container" style="display: flex; margin-bottom: 20px; gap: 10px;">
+      <select v-model="searchType" style="width: 150px; padding: 5px;">
+        <option value="title">제목</option>
+        <option value="content">내용</option>
+        <option value="all">제목 + 내용</option>
+      </select>
+      <input 
+        type="text" 
+        v-model="searchKeyword" 
+        @keyup.enter="searchBoards" 
+        placeholder="검색어를 입력하세요" 
+        style="flex-grow: 1; padding: 5px;"
+      >
+      <button @click="searchBoards" style="width: 100px; padding: 5px;">검색</button>
+    </div>
+
     <div class="table-responsive">
       <table class="board-table">
         <thead>
@@ -54,14 +70,78 @@ export default {
       boards: [],
       currentPage: 1,
       totalPages: 0,
+      totalElements: 0,
+      pageSize: 10,
+      searchKeyword: '',
+      searchType: 'title',
+      isSearchMode: false
     };
   },
   methods: {
     async fetchBoards(page = 1) {
-      const response = await apiClient.get(`/board?page=${page - 1}`);
-      this.boards = response.data.content;
-      this.totalPages = response.data.totalPages;
-      this.currentPage = page;
+      try {
+        let response;
+        if (this.isSearchMode && this.searchKeyword.trim() !== '') {
+          // 검색 로직
+          switch(this.searchType) {
+            case 'title':
+              response = await apiClient.get(`/board/api/auth/search/title`, {
+                params: { 
+                  title: this.searchKeyword, 
+                  page: page - 1, 
+                  size: this.pageSize 
+                }
+              });
+              break;
+            case 'content':
+              response = await apiClient.get(`/board/api/auth/search/content`, {
+                params: { 
+                  content: this.searchKeyword, 
+                  page: page - 1, 
+                  size: this.pageSize 
+                }
+              });
+              break;
+            case 'all':
+              response = await apiClient.get(`/board/api/auth/search`, {
+                params: { 
+                  keyword: this.searchKeyword, 
+                  page: page - 1, 
+                  size: this.pageSize 
+                }
+              });
+              break;
+          }
+        } else {
+          // 일반 게시판 목록 조회
+          response = await apiClient.get(`/board`, {
+            params: { 
+              page: page - 1, 
+              size: this.pageSize 
+            }
+          });
+        }
+
+        // 백엔드에서 받은 응답 구조에 맞게 데이터 설정
+        this.boards = response.data.content;
+        this.totalPages = response.data.totalPages;
+        this.totalElements = response.data.totalElements;
+        this.currentPage = response.data.pageNumber + 1;
+      } catch (error) {
+        console.error('Failed to fetch boards:', error);
+        alert('게시글을 불러오는 데 실패했습니다.');
+      }
+    },
+
+    searchBoards() {
+      if (this.searchKeyword.trim() === '') {
+        this.isSearchMode = false;
+        this.fetchBoards(1);
+        return;
+      }
+
+      this.isSearchMode = true;
+      this.fetchBoards(1);
     },
 
     changePage(page) {
@@ -90,6 +170,19 @@ export default {
 </script>
 
 <style scoped>
+/* 기존 스타일 그대로 유지 */
+.board-container {
+  width: 100%;
+  height: 100vh;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
 /* 게시판 컨테이너 스타일 - 화면 전체에 맞춤 */
 .board-container {
   width: 100%;

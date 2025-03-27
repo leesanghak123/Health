@@ -10,8 +10,6 @@ import com.sang.health.jwt.JWTUtil;
 import com.sang.health.redis.RedisUtil;
 
 import io.jsonwebtoken.ExpiredJwtException;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -59,7 +57,7 @@ public class ReissueService {
             
 
             // 새로운 Access 토큰 생성 (10분 유효) (현재 6초)
-            String newAccessToken = jwtUtil.createJwt("access", username, role, 6000L);
+            String newAccessToken = jwtUtil.createJwt("access", username, role, 60000L);
             
             // 새로운 deviceId 생성
             String newDeviceId = UUID.randomUUID().toString();

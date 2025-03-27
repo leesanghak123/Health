@@ -1,5 +1,8 @@
 package com.sang.health.service.board;
 
+import java.sql.Timestamp;
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -10,10 +13,12 @@ import com.sang.health.dto.board.BoardFindDto;
 import com.sang.health.dto.board.BoardWriteDto;
 import com.sang.health.entity.Board;
 import com.sang.health.entity.BoardCount;
+import com.sang.health.entity.BoardES;
 import com.sang.health.entity.BoardLikeTotal;
 import com.sang.health.entity.User;
 import com.sang.health.redis.RedisUtil;
 import com.sang.health.repository.BoardCountRepository;
+import com.sang.health.repository.BoardESRepository;
 import com.sang.health.repository.BoardLikeRepository;
 import com.sang.health.repository.BoardLikeTotalRepository;
 import com.sang.health.repository.BoardRepository;
@@ -28,14 +33,16 @@ public class BoardService {
 	private final BoardCountRepository boardCountRepository;
 	private final BoardLikeTotalRepository boardLikeTotalRepository;
 	private final BoardLikeRepository boardLikeRepository;
+	private final BoardESRepository boardESRepository;
 	
-	public BoardService(BoardRepository boardRepository, UserRepository userRepository, RedisUtil redisUtil, BoardCountRepository boardCountRepository, BoardLikeTotalRepository boardLikeTotalRepository, BoardLikeRepository boardLikeRepository) {
+	public BoardService(BoardRepository boardRepository, UserRepository userRepository, RedisUtil redisUtil, BoardCountRepository boardCountRepository, BoardLikeTotalRepository boardLikeTotalRepository, BoardLikeRepository boardLikeRepository, BoardESRepository boardESRepository) {
 		this.boardRepository = boardRepository;
 		this.userRepository = userRepository;
 		this.redisUtil = redisUtil;
 		this.boardCountRepository = boardCountRepository;
 		this.boardLikeTotalRepository = boardLikeTotalRepository;
 		this.boardLikeRepository = boardLikeRepository;
+		this.boardESRepository = boardESRepository;
 	}
 	
 	@Transactional(readOnly = true)
@@ -65,12 +72,22 @@ public class BoardService {
 		User user = userRepository.findByUsername(username)
 				.orElseThrow(() -> new IllegalArgumentException("User not found: " + username));
 		
+		// DB 저장
 		Board board = new Board();
 		board.setTitle(boardWriteDto.getTitle());
         board.setContent(boardWriteDto.getContent());
         board.setUser(user); // 연관 사용자 설정
         
-        boardRepository.save(board);
+        Board savedBoard = boardRepository.save(board);
+        
+        // Elasticsearch 저장
+        BoardES boardES = new BoardES();
+        boardES.setId(savedBoard.getId()); // Board의 ID를 문자열로 변환하여 설정
+        boardES.setTitle(savedBoard.getTitle());
+        boardES.setContent(savedBoard.getContent());
+        boardES.setUsername(username);
+        boardES.setCreateDate(Timestamp.from(savedBoard.getCreateDate().toInstant()));
+        boardESRepository.save(boardES);
         
         // Redis에 새 게시글 조회수 초기화
         redisUtil.saveBoardView(board.getId());
@@ -133,9 +150,22 @@ public class BoardService {
             throw new IllegalArgumentException("본인의 글만 수정할 수 있습니다.");
         }
 		
+		// DB
 		board.setTitle(boardWriteDto.getTitle());
 		board.setContent(boardWriteDto.getContent());
 		boardRepository.save(board);
+		
+		// Elasticsearch
+	    Optional<BoardES> boardESOptional = boardESRepository.findById(id);
+	    if (boardESOptional.isPresent()) {
+	        BoardES boardES = boardESOptional.get();
+	        boardES.setTitle(boardWriteDto.getTitle());
+	        boardES.setContent(boardWriteDto.getContent());
+	        boardESRepository.save(boardES);
+	    } else {
+	    	System.out.println("Elasticsearch에 해당 ID의 게시글이 없음.");
+	    }
+		
 	}
 	
 	@Transactional
@@ -148,12 +178,17 @@ public class BoardService {
             throw new IllegalArgumentException("본인의 글만 삭제할 수 있습니다.");
         }
 		
+		// DB
 		boardRepository.delete(board);
 		
 	    boardCountRepository.deleteById(id); // 조회수 엔티티 삭제
 	    boardLikeTotalRepository.deleteById(id); // 전체 추천수 엔티티 삭제
 	    boardLikeRepository.deleteById(id); // 추천 user 삭제
 	    
+	    // Elasticsearch
+	    boardESRepository.deleteById(id);
+	    
+	    // redis
 		redisUtil.deleteBoardView(id);
 		redisUtil.deleteBoardLike(id);
 		redisUtil.deleteBoardLikeTotal(id);
@@ -174,5 +209,65 @@ public class BoardService {
             redisUtil.decrementBoardLike(id);
             redisUtil.deleteBoardLike(id, username);
         }
+	}
+	
+	@Transactional(readOnly = true)
+	public Page<BoardFindDto> 제목찾기(String title, Pageable pageable) {
+	    Page<BoardES> boardESPage = boardESRepository.findByTitleContaining(title, pageable);
+	    
+	    return boardESPage.map(boardES -> {
+	        Long boardId = Long.parseLong(boardES.getId().toString());
+	        int viewCount = redisUtil.getBoardView(boardId);
+	        int likeCount = redisUtil.getBoardLikeTotal(boardId);
+	        
+	        return new BoardFindDto(
+	            boardId,
+	            boardES.getTitle(),
+	            boardES.getUsername(),
+	            boardES.getCreateDate().toInstant(),
+	            viewCount,
+	            likeCount
+	        );
+	    });
+	}
+
+	@Transactional(readOnly = true)
+	public Page<BoardFindDto> 내용찾기(String content, Pageable pageable) {
+	    Page<BoardES> boardESPage = boardESRepository.findByContentContaining(content, pageable);
+	    
+	    return boardESPage.map(boardES -> {
+	        Long boardId = Long.parseLong(boardES.getId().toString());
+	        int viewCount = redisUtil.getBoardView(boardId);
+	        int likeCount = redisUtil.getBoardLikeTotal(boardId);
+	        
+	        return new BoardFindDto(
+	            boardId,
+	            boardES.getTitle(),
+	            boardES.getUsername(),
+	            boardES.getCreateDate().toInstant(),
+	            viewCount,
+	            likeCount
+	        );
+	    });
+	}
+
+	@Transactional(readOnly = true)
+	public Page<BoardFindDto> 제목내용찾기(String keyword, Pageable pageable) {
+	    Page<BoardES> boardESPage = boardESRepository.findByTitleContainingOrContentContaining(keyword, keyword, pageable);
+	    
+	    return boardESPage.map(boardES -> {
+	        Long boardId = Long.parseLong(boardES.getId().toString());
+	        int viewCount = redisUtil.getBoardView(boardId);
+	        int likeCount = redisUtil.getBoardLikeTotal(boardId);
+	        
+	        return new BoardFindDto(
+	            boardId,
+	            boardES.getTitle(),
+	            boardES.getUsername(),
+	            boardES.getCreateDate().toInstant(),
+	            viewCount,
+	            likeCount
+	        );
+	    });
 	}
 }
