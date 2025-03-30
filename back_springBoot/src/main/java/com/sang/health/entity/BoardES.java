@@ -10,7 +10,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 import lombok.Data;
 
 @Data
-@Document(indexName = "esver1")
+@Document(indexName = "board-index")
 public class BoardES {
 	
 	@Id

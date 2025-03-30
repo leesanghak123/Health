@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ElasticsearchIndexConfig {
 
     private final ElasticsearchOperations elasticsearchOperations;
-
+    
     public ElasticsearchIndexConfig(ElasticsearchOperations elasticsearchOperations) {
         this.elasticsearchOperations = elasticsearchOperations;
     }
@@ -26,7 +26,10 @@ public class ElasticsearchIndexConfig {
     @PostConstruct
     public void createIndex() {
         try {
-            IndexOperations indexOperations = elasticsearchOperations.indexOps(BoardES.class);
+        	//String dynamicIndexName = "board-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+            
+        	IndexOperations indexOperations = elasticsearchOperations.indexOps(BoardES.class);
+            //String IndexName = "board-index";
 
             // 인덱스가 존재하지 않는 경우에만 생성
             if (!indexOperations.exists()) {
@@ -100,6 +103,18 @@ public class ElasticsearchIndexConfig {
                 // 인덱스 생성
                 indexOperations.create(settings);
                 indexOperations.putMapping(Document.from(mappings));
+                
+//                /// Alias 설정
+//                AliasActionParameters addParams = AliasActionParameters.builder()
+//                        .withIndices(dynamicIndexName)
+//                        .withAliases(aliasName)
+//                        .build();
+//
+//                AliasActions aliasActions = new AliasActions();
+//                aliasActions.add(new AliasAction.Add(addParams));
+//
+//                // alias 작업 실행 (후)
+//                indexOperations.alias(aliasActions);
 
                 log.info("BoardES 인덱스 생성 완료");
             } else {
