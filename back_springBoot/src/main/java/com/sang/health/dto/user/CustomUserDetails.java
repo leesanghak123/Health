@@ -6,7 +6,7 @@ import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.sang.health.entity.User;
+import com.sang.health.entity.user.User;
 
 public class CustomUserDetails implements UserDetails{
 	

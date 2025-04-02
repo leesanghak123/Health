@@ -7,9 +7,9 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
-import com.sang.health.entity.BoardCount;
-import com.sang.health.entity.BoardLike;
-import com.sang.health.entity.BoardLikeTotal;
+import com.sang.health.entity.board.BoardCount;
+import com.sang.health.entity.board.BoardLike;
+import com.sang.health.entity.board.BoardLikeTotal;
 
 @Component
 public class RedisUtil {

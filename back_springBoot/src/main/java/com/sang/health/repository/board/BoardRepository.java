@@ -1,11 +1,11 @@
-package com.sang.health.repository;
+package com.sang.health.repository.board;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.sang.health.entity.Board;
+import com.sang.health.entity.board.Board;
 
 public interface BoardRepository extends JpaRepository<Board, Long>{
 

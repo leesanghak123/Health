@@ -1,4 +1,4 @@
-package com.sang.health.entity;
+package com.sang.health.entity.board;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

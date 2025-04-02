@@ -1,8 +1,10 @@
-package com.sang.health.entity;
+package com.sang.health.entity.board;
 
 import java.sql.Timestamp;
 
 import org.hibernate.annotations.CreationTimestamp;
+
+import com.sang.health.entity.user.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

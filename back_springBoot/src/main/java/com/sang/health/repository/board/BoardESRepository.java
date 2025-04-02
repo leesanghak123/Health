@@ -1,10 +1,10 @@
-package com.sang.health.repository;
+package com.sang.health.repository.board;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
-import com.sang.health.entity.BoardES;
+import com.sang.health.entity.board.BoardES;
 
 public interface BoardESRepository extends ElasticsearchRepository<BoardES, Long>{
 

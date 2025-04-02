@@ -1,6 +1,10 @@
 package com.sang.health.dto.board;
 
 import java.sql.Timestamp;
+import java.util.List;
+
+import com.sang.health.dto.reply.ReReplyDetailDto;
+import com.sang.health.dto.reply.ReplyDetailDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,4 +21,6 @@ public class BoardDetailDto {
 	private int count;
 	private int likeCnt;
 	private boolean isLiked; // 추천 여부
+	private List<ReplyDetailDto> reply;
+	private List<ReReplyDetailDto> reReply;
 }

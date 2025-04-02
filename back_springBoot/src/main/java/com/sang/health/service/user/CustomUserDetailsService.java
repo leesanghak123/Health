@@ -6,8 +6,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.sang.health.dto.user.CustomUserDetails;
-import com.sang.health.entity.User;
-import com.sang.health.repository.UserRepository;
+import com.sang.health.entity.user.User;
+import com.sang.health.repository.user.UserRepository;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService{

@@ -1,4 +1,4 @@
-package com.sang.health.entity;
+package com.sang.health.entity.board;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -7,11 +7,11 @@ import lombok.Data;
 
 @Entity
 @Data
-public class BoardCount {
+public class BoardLike {
 
 	@Id
 	private Long boardId;
 	
 	@Column(nullable = false)
-	private int count;
+	private String username;
 }

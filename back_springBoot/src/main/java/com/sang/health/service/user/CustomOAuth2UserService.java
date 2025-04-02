@@ -11,8 +11,8 @@ import com.sang.health.dto.user.GoogleResponse;
 import com.sang.health.dto.user.NaverResponse;
 import com.sang.health.dto.user.OAuth2Response;
 import com.sang.health.dto.user.UserDTO;
-import com.sang.health.entity.User;
-import com.sang.health.repository.UserRepository;
+import com.sang.health.entity.user.User;
+import com.sang.health.repository.user.UserRepository;
 
 import jakarta.transaction.Transactional;
 

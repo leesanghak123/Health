@@ -1,8 +1,10 @@
-package com.sang.health.entity;
+package com.sang.health.entity.user;
 
 import java.util.List;
 
 import org.hibernate.annotations.BatchSize;
+
+import com.sang.health.entity.board.Board;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -30,7 +32,7 @@ public class User {
     @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$", message = "이메일 형식이 올바르지 않습니다")  // 이메일 검증 정규 표현식
     private String email;
 
-    @Column(nullable = true) // 소셜 로그인은 비밀번호
+    @Column(nullable = true)
     private String password;
 
     @Column(nullable = false)

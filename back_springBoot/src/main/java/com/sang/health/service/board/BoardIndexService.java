@@ -13,9 +13,9 @@ import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
 
-import com.sang.health.entity.Board;
-import com.sang.health.entity.BoardES;
-import com.sang.health.repository.BoardRepository;
+import com.sang.health.entity.board.Board;
+import com.sang.health.entity.board.BoardES;
+import com.sang.health.repository.board.BoardRepository;
 
 import java.util.Date;
 import java.util.List;

@@ -8,7 +8,7 @@ import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.IndexOperations;
 import org.springframework.data.elasticsearch.core.document.Document;
 
-import com.sang.health.entity.BoardES;
+import com.sang.health.entity.board.BoardES;
 
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
