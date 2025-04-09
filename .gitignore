@@ -1,0 +1,13 @@
+# MySQL 데이터는 Git에 올리지 않음
+mysql_data/
+
+# 운영체제별 쓰레기 파일
+.DS_Store
+Thumbs.db
+
+# IDE 설정 (예: IntelliJ, VSCode 등)
+.idea/
+.vscode/
+
+# 로그파일 무시
+*.log

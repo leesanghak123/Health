@@ -1,0 +1,74 @@
+services:
+  my-springboot-health:
+    build:
+        context: ./back_springBoot
+    ports:
+      - 8002:8002
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    depends_on:
+      my-mysql:
+        condition: service_healthy
+      my-redis:
+        condition: service_healthy
+    restart: unless-stopped  # 실패 시 자동 재시도
+        
+  my-mysql:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: sang0412         # root 비밀번호
+      MYSQL_DATABASE: healthApp            # 생성할 DB
+      MYSQL_USER: health                   # 만들 사용자
+      MYSQL_PASSWORD: sang0412             # 해당 사용자 비밀번호
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    ports:
+      - 3307:3306
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-uhealth", "-psang0412"]
+      interval: 5s
+      retries: 10
+      
+  my-redis:
+    image: redis
+    ports:
+      - 6379:6379
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      retries: 10
+      
+  my-elastic:
+    build:
+      context: ./elasticsearch
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms2g -Xmx2g
+      - xpack.security.enabled=false
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./dict:/usr/share/elasticsearch/config/dict
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s -f http://localhost:9200 || exit 1"]
+      interval: 5s
+      retries: 10
+      start_period: 20s
+  
+  my-vue:
+    build:
+        context: ./front_vue
+    ports:
+      - 8003:8003
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro 
