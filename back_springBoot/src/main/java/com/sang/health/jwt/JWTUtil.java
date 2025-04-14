@@ -82,7 +82,7 @@ public class JWTUtil {
         cookie.setMaxAge(24*60*60);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
-        cookie.setSecure(true);
+        //cookie.setSecure(true);
         
         return cookie;
     }

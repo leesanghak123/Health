@@ -36,7 +36,7 @@
     },
     methods: {
       register() {
-        axios.post('http://localhost:8002/api/auth/join', {
+        axios.post(`${process.env.VUE_APP_API_BASE_URL}/api/auth/join`, {
           username: this.username,
           password: this.password,
           email: this.email

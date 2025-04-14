@@ -78,7 +78,7 @@ export default {
 
     // 소셜 로그인 후 쿠키 기반으로 JWT 요청
     getJWTFromRefreshToken() {
-      axios.get('http://localhost:8002/api/auth/jwt', { withCredentials: true })
+      axios.get(`${process.env.VUE_APP_API_BASE_URL}/api/auth/jwt`, { withCredentials: true })
       .then(response => {
         const accessToken = response.headers['access'];
         if (accessToken) {
