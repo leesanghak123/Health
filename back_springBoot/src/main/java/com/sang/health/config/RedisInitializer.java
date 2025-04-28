@@ -3,10 +3,10 @@ package com.sang.health.config;
 import com.sang.health.entity.board.BoardCount;
 import com.sang.health.entity.board.BoardLike;
 import com.sang.health.entity.board.BoardLikeTotal;
-import com.sang.health.redis.RedisUtil;
 import com.sang.health.repository.board.BoardCountRepository;
 import com.sang.health.repository.board.BoardLikeRepository;
 import com.sang.health.repository.board.BoardLikeTotalRepository;
+import com.sang.health.util.RedisUtil;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;

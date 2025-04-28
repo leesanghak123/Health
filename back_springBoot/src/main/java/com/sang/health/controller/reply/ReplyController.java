@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sang.health.dto.reply.ReReplyWriteDto;
 import com.sang.health.dto.reply.ReplyWriteDto;
-import com.sang.health.jwt.JWTUtil;
 import com.sang.health.service.reply.ReplyService;
+import com.sang.health.util.JWTUtil;
 
 import jakarta.validation.Valid;
 

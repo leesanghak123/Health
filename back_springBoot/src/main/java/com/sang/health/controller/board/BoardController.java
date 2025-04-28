@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sang.health.dto.board.BoardDetailDto;
 import com.sang.health.dto.board.BoardFindDto;
 import com.sang.health.dto.board.BoardWriteDto;
-import com.sang.health.jwt.JWTUtil;
 import com.sang.health.service.board.BoardService;
+import com.sang.health.util.JWTUtil;
 
 import jakarta.validation.Valid;
 

@@ -107,6 +107,22 @@
     		<groupId>org.springframework.boot</groupId>
     		<artifactId>spring-boot-starter-data-elasticsearch</artifactId>
   		</dependency>
+  		<!-- jdbc -->
+		<dependency>
+    		<groupId>org.springframework.boot</groupId>
+    		<artifactId>spring-boot-starter-jdbc</artifactId>
+		</dependency>
+		<!-- Batch -->
+		<dependency>
+    		<groupId>org.springframework.boot</groupId>
+    		<artifactId>spring-boot-starter-batch</artifactId>
+		</dependency>
+		<!-- yml → java 객체 검증 -->
+		<dependency>
+        	<groupId>org.springframework.boot</groupId>
+        	<artifactId>spring-boot-configuration-processor</artifactId>
+        	<optional>true</optional>
+    	</dependency>
 	</dependencies>
 
 	<build>

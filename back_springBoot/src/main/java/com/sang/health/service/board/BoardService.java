@@ -22,7 +22,6 @@ import com.sang.health.entity.board.BoardLikeTotal;
 import com.sang.health.entity.reply.ReReply;
 import com.sang.health.entity.reply.Reply;
 import com.sang.health.entity.user.User;
-import com.sang.health.redis.RedisUtil;
 import com.sang.health.repository.board.BoardCountRepository;
 import com.sang.health.repository.board.BoardESRepository;
 import com.sang.health.repository.board.BoardLikeRepository;
@@ -31,6 +30,7 @@ import com.sang.health.repository.board.BoardRepository;
 import com.sang.health.repository.reply.ReReplyRepositoy;
 import com.sang.health.repository.reply.ReplyRepository;
 import com.sang.health.repository.user.UserRepository;
+import com.sang.health.util.RedisUtil;
 
 @Service
 public class BoardService {

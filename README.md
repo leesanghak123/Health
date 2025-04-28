@@ -31,6 +31,7 @@
 - **Spring Data JPA**
 - **Spring Data Redis** (DockerHub 기준 `latest`)
 - **Spring Data Elasticsearch**: `v8.17.2`
+- **Spring Batch**:  `v3.4.3`
 - **JWT (JJWT)**: `v0.12.3`
 - **OAuth2.0**: 포함된 Spring Security 모듈
 - **MySQL**: (DockerHub 기준 `latest`)
@@ -58,10 +59,11 @@
 ## ⚙️ 공통 로직 및 최적화
 
 - `Pagination` 시 발생하는 N+1 문제 해결  
-- `Batch Size`, `Fetch Join` 활용
+- `Batch Size`, `Fetch Join`, `jdbc` 활용
 - 조회수 & 추천수 기능의 **동시성 트래픽 문제 해결**
 - 무분별한 새로고침에 따른 **조회수 증가 제한**
 - **Elasticsearch 기반 고속 검색 기능** 구현
+- Batch를 통한 스케줄링 구현
 
 ---
 

@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.sang.health.jwt.JWTUtil;
+
+import com.sang.health.util.JWTUtil;
 
 @RestController
 @RequestMapping("/api/auth")

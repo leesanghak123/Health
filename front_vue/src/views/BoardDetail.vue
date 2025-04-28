@@ -239,7 +239,7 @@ export default {
     },
 
     editPost() {
-      this.$router.push(`/board/edit/${this.board.id}`);
+      this.$router.push(`/board/update/${this.board.id}`);
     },
 
     async toggleLike() {

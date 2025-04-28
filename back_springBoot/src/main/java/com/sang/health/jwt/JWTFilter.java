@@ -10,6 +10,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.sang.health.dto.user.CustomUserDetails;
 import com.sang.health.entity.user.User;
+import com.sang.health.util.JWTUtil;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;

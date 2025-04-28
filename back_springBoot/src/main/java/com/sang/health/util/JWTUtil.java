@@ -1,4 +1,4 @@
-package com.sang.health.jwt;
+package com.sang.health.util;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;

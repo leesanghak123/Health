@@ -1,4 +1,4 @@
-package com.sang.health.redis;
+package com.sang.health.util;
 
 import java.util.List;
 import java.util.Set;
@@ -159,25 +159,25 @@ public class RedisUtil {
     
     // 사용자 추천 여부 확인
     public boolean getBoardLike(Long boardId, String username) {
-        String key = "board:like:" + boardId + ":" + username;
+        String key = "board:like:check:" + boardId + ":" + username;
         return Boolean.TRUE.equals(redisTemplate.hasKey(key));
     }
     
     // 사용자 추천 생성
     public void createBoardLike(Long boardId, String username) {
-        String key = "board:like:" + boardId + ":" + username;
+        String key = "board:like:check:" + boardId + ":" + username;
         redisTemplate.opsForValue().set(key, "1");
     }
     
     // 사용자 좋아요 삭제
     public void deleteBoardLike(Long boardId, String username) {
-        String key = "board:like:" + boardId + ":" + username;
+        String key = "board:like:check:" + boardId + ":" + username;
         redisTemplate.delete(key);
     }
     
     // 특정 게시글의 모든 추천 삭제
     public void deleteBoardLike(Long boardId) {
-        String pattern = "board:like:" + boardId + ":*";
+        String pattern = "board:like:check" + boardId + ":*";
         Set<String> keys = redisTemplate.keys(pattern);
         if (keys != null && !keys.isEmpty()) {
             redisTemplate.delete(keys);

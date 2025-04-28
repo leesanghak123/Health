@@ -5,8 +5,8 @@ import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sang.health.jwt.JWTUtil;
-import com.sang.health.redis.RedisUtil;
+import com.sang.health.util.JWTUtil;
+import com.sang.health.util.RedisUtil;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;

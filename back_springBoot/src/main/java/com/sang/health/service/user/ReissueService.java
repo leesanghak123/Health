@@ -6,8 +6,8 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.sang.health.jwt.JWTUtil;
-import com.sang.health.redis.RedisUtil;
+import com.sang.health.util.JWTUtil;
+import com.sang.health.util.RedisUtil;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.transaction.Transactional;

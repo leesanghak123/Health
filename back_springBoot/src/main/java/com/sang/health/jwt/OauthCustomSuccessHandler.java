@@ -10,7 +10,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import com.sang.health.redis.RedisUtil;
+import com.sang.health.util.JWTUtil;
+import com.sang.health.util.RedisUtil;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

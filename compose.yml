@@ -17,18 +17,16 @@ services:
   my-mysql:
     image: mysql
     environment:
-      MYSQL_ROOT_PASSWORD: sang0412         # root 비밀번호
-      MYSQL_DATABASE: healthApp            # 생성할 DB
-      MYSQL_USER: health                   # 만들 사용자
-      MYSQL_PASSWORD: sang0412             # 해당 사용자 비밀번호
+      MYSQL_ROOT_PASSWORD: sang0412        # root 비밀번호
     volumes:
       - ./mysql_data:/var/lib/mysql
+      - ./mysql_init:/docker-entrypoint-initdb.d
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     ports:
       - 3307:3306
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-uhealth", "-psang0412"]
+      test: ["CMD", "mysqladmin", "ping", "-uroot", "-psang0412"]
       interval: 5s
       retries: 10
       
