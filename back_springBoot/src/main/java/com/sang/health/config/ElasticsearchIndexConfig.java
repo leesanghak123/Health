@@ -51,6 +51,9 @@ public class ElasticsearchIndexConfig {
                         "created", Map.of(
                             "type", "date",
                             "index", false
+                        ),
+                        "username", Map.of(
+                            "type", "keyword"
                         )
                     )
                 );

@@ -22,7 +22,7 @@ public class scheduling {
     }
 
     // ES 배치 작업 - 매일 자정
-    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 12 13 * * *", zone = "Asia/Seoul")
     public void runESJob() throws Exception {
         System.out.println("ES batch job starting at " + new Date());
         

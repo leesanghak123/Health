@@ -1,5 +1,5 @@
 # Health
-=======
+
 # 🏋️‍♀️ Health App
 
 **Health에 필요한 정보들을 담은 Web Application입니다.**
@@ -59,7 +59,7 @@
 ## ⚙️ 공통 로직 및 최적화
 
 - `Pagination` 시 발생하는 N+1 문제 해결  
-- `Batch Size`, `Fetch Join`, `jdbc` 활용
+- `Batch Size`, `Fetch Join`, `jpql` 활용
 - 조회수 & 추천수 기능의 **동시성 트래픽 문제 해결**
 - 무분별한 새로고침에 따른 **조회수 증가 제한**
 - **Elasticsearch 기반 고속 검색 기능** 구현
@@ -72,7 +72,7 @@
 
 ## 🎨 UI
 ![회원가입](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fcb2G1s%2FbtsNip6RW0I%2Fkc39YE0Yv7e5UyDrgEJYbk%2Fimg.png)
-![로그인](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdheQet%2FbtsNi6E578p%2F24zmWxqfM3JN0KLTestjFK%2Fimg.png)
+![로그인](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FF9Wmb%2FbtsNG1jwtUB%2FAkYIXfHKSSA19negRJYnX0%2Fimg.png)
 ![메인화면](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbIPUvc%2FbtsNg9h6HaK%2F363cQOtZRUt4ousif5ynN0%2Fimg.png)
 ![글작성](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FoymCN%2FbtsNiATveEy%2FmjouMkFHdgGvF7KPFLEBMk%2Fimg.png)
 ![게시글보기](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FR4k8c%2FbtsNjAMrbYE%2FhTuS7rmxymgtAqqcCzktk0%2Fimg.png)

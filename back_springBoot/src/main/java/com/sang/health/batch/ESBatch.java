@@ -27,7 +27,7 @@ import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.sang.health.entity.board.Board;
+import com.sang.health.dto.board.BoardWithUsername;
 import com.sang.health.entity.board.BoardES;
 
 import lombok.extern.slf4j.Slf4j;
@@ -103,6 +103,9 @@ public class ESBatch {
                             "createDate", Map.of(
                                 "type", "date",
                                 "index", false
+                            ),
+                            "username", Map.of(
+                                    "type", "keyword"
                             )
                         )
                     );
@@ -168,7 +171,7 @@ public class ESBatch {
 		System.out.println("ES Step");
 		
 		return new StepBuilder("ESStep", jobRepository)
-				.<Board, BoardES> chunk(10, platformTransactionManager)
+				.<BoardWithUsername, BoardES> chunk(10, platformTransactionManager)
 				.reader(boardReader())
 	            .processor(boardToESProcessor())
 	            .writer(boardEsWriter())
@@ -178,27 +181,28 @@ public class ESBatch {
 	
 	// read
 	@Bean
-	JdbcPagingItemReader<Board> boardReader() {
-		return new JdbcPagingItemReaderBuilder<Board>()
+	JdbcPagingItemReader<BoardWithUsername> boardReader() {
+		return new JdbcPagingItemReaderBuilder<BoardWithUsername>()
 				.name("boardReader")
 				.dataSource(dataSource)
-				.selectClause("SELECT id, title, content, createDate")
-	            .fromClause("FROM Board")
-	            .sortKeys(Map.of("id", Order.ASCENDING))
-	            .rowMapper(new BeanPropertyRowMapper<>(Board.class))
+				.selectClause("SELECT b.id, b.title, b.content, b.createDate, u.username")
+				.fromClause("FROM Board b JOIN User u ON b.userId = u.id")
+	            .sortKeys(Map.of("b.id", Order.ASCENDING))
+	            .rowMapper(new BeanPropertyRowMapper<>(BoardWithUsername.class))
 	            .pageSize(10)
 	            .build();
 	}
 	
 	// process
 	@Bean
-	ItemProcessor<Board, BoardES> boardToESProcessor() {
+	ItemProcessor<BoardWithUsername, BoardES> boardToESProcessor() {
 		return board -> {
 			BoardES es = new BoardES();
 			es.setId(board.getId());
             es.setTitle(board.getTitle());
             es.setContent(board.getContent());
             es.setCreateDate(board.getCreateDate());
+            es.setUsername(board.getUsername());
             return es;
 		};
 	}

@@ -14,17 +14,25 @@
         </div>
         <p v-if="errorMessage" class="text-danger mt-2">{{ errorMessage }}</p>
       </form>
+
+      <!-- 소셜 로그인 이미지 버튼 -->
       <div class="d-flex justify-content-between mt-3">
-        <a @click="handleSocialLogin" href="http://localhost:8002/oauth2/authorization/naver" class="btn btn-outline-success w-48">네이버 로그인</a>
-        <a @click="handleSocialLogin" href="http://localhost:8002/oauth2/authorization/google" class="btn btn-outline-danger w-48">구글 로그인</a>
+        <a @click="handleSocialLogin('naver')" class="w-48">
+          <img :src="naverImg" alt="네이버 로그인" class="img-fluid" />
+        </a>
+        <a @click="handleSocialLogin('google')" class="w-48">
+          <img :src="googleImg" alt="구글 로그인" class="img-fluid" />
+        </a>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
-import apiClient from '@/services/reissue';
+import axios from 'axios'
+import apiClient from '@/services/reissue'
+import naverImg from '@/assets/naver_login_btn.png'
+import googleImg from '@/assets/google_login_btn.png'
 
 export default {
   data() {
@@ -32,51 +40,49 @@ export default {
       username: '',
       password: '',
       errorMessage: '',
+      naverImg,
+      googleImg,
     };
   },
   mounted() {
-    // URL에서 social 파라미터 확인 후 소셜 로그인 처리
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('social') === 'true') {
       this.getJWTFromRefreshToken();
-      // URL 파라미터 제거
       const newUrl = window.location.pathname;
       window.history.replaceState({}, document.title, newUrl);
     }
   },
-  methods: {    
-    // 일반 로그인
+  methods: {
     login() {
-      // 입력값 검증
       if (!this.username || !this.password) {
         this.errorMessage = '아이디와 비밀번호를 모두 입력해주세요.';
         return;
       }
-       
+
       apiClient.post('/login', {
         username: this.username,
         password: this.password
-      }, { withCredentials: true })  // 로그인 시 쿠키 포함 (Refresh 토큰 저장 목적)
+      }, { withCredentials: true })
       .then(response => {
         const token = response.headers['access'];
-        
         if (token) {
-          console.log('유효한 토큰이 있음, 저장 및 헤더 설정');
-          // 토큰 저장 (Bearer 접두사 없이)
           localStorage.setItem('access', token);
-          // 서버 요청 시 access 헤더 사용
           axios.defaults.headers.common['access'] = token;
-          window.location.href = '/'; // 새로고침
+          window.location.href = '/';
         } else {
           this.errorMessage = '로그인 중 오류가 발생했습니다.';
         }
       })
-      .catch(error => {
+      .catch(() => {
         this.errorMessage = '아이디 또는 비밀번호가 잘못되었습니다.';
       });
     },
 
-    // 소셜 로그인 후 쿠키 기반으로 JWT 요청
+    handleSocialLogin(provider) {
+      const url = `http://localhost:8002/oauth2/authorization/${provider}`
+      window.location.href = url
+    },
+
     getJWTFromRefreshToken() {
       axios.get(`${process.env.VUE_APP_API_BASE_URL}/api/auth/jwt`, { withCredentials: true })
       .then(response => {
@@ -84,7 +90,7 @@ export default {
         if (accessToken) {
           localStorage.setItem('access', accessToken);
           axios.defaults.headers.common['access'] = accessToken;
-          window.location.href = '/'; // 새로고침
+          window.location.href = '/';
         }
       })
       .catch(error => {
@@ -100,8 +106,12 @@ export default {
 .form-group {
   margin-bottom: 20px;
 }
-
-.btn {
+.w-48 {
   width: 48%;
+}
+.img-fluid {
+  width: 100%;
+  height: 90%;
+  cursor: pointer;
 }
 </style>

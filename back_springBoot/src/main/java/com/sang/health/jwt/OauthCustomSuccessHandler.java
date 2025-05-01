@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import com.sang.health.util.JWTUtil;
 import com.sang.health.util.RedisUtil;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
