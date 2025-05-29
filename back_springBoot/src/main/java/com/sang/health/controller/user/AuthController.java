@@ -41,7 +41,6 @@ public class AuthController {
             // 응답 헤더에 token 추가
             HttpHeaders headers = new HttpHeaders();
             headers.set("access", accessToken);
-            headers.set("Access-Control-Expose-Headers", "access");
 
             return new ResponseEntity<>(Map.of("message", "토큰이 성공적으로 발급되었습니다."), headers, HttpStatus.OK);
         } catch (Exception e) {

@@ -1,18 +1,19 @@
 package com.sang.health.dto.user;
 
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
 public class JoinDto {
 	
-	    @NotNull(message = "Username cannot be null")
+	    @NotBlank(message = "Username cannot be null")
 	    private String username;
 	    
-	    @NotNull(message = "Password cannot be null")
+	    @NotBlank(message = "Password cannot be null")
 	    private String password;
 	    
 	    @Email(message = "Invalid email format")
+	    @NotBlank
 	    private String email;
 }

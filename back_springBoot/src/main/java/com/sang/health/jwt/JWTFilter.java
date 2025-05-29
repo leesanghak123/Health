@@ -44,6 +44,7 @@ public class JWTFilter extends OncePerRequestFilter {
         String token = extractToken(request);
 
         // 토큰이 없다면 다음 필터로 넘김 (권한이 필요없는 부분 요청일 수도 있기 때문)
+        // 인증이 필요한 경우에도 SecurityContext가 비어있으므로 보안상 문제가 되지는 않음
         if (token == null) {
             System.out.println("[JWT Filter] 토큰 없음 - 다음 필터로 진행");
             filterChain.doFilter(request, response);

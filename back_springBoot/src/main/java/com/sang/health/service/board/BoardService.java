@@ -69,7 +69,7 @@ public class BoardService {
 			int viewCount = redisUtil.getBoardView(board.getId()); // 조회수
 			int likeCount = redisUtil.getBoardLikeTotal(board.getId()); // 추천수
 			
-			return new BoardFindDto(
+			return new BoardFindDto( // map 내부 람다함수 리턴
 				board.getId(),
 				board.getTitle(),
 				board.getUser().getUsername(),

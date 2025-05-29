@@ -1,14 +1,14 @@
 package com.sang.health.dto.user;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
 public class UserDTO {
 
-	@NotNull(message = "Role cannot be null")
+	@NotBlank(message = "Role cannot be null")
     private String role;
     
-    @NotNull(message = "Username cannot be null")
+    @NotBlank(message = "Username cannot be null")
     private String username;
 }

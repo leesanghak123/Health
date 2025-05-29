@@ -49,19 +49,19 @@ public class SecurityConfig {
     
     // AuthenticationManager Bean 등록
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+    AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
     	
         return configuration.getAuthenticationManager();
     }
 	
 	@Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+    BCryptPasswordEncoder bCryptPasswordEncoder() {
 
         return new BCryptPasswordEncoder();
     }
 	
 	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 		// cors 설정
 		http.cors((corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
@@ -77,7 +77,7 @@ public class SecurityConfig {
                 configuration.setAllowedHeaders(Collections.singletonList("*")); // 허용할 헤더
                 configuration.setMaxAge(3600L); // 허용을 할 수 있는 시간
 
-				configuration.setExposedHeaders(Arrays.asList("Authorization", "access", "refresh")); // Authorization 헤더 허용
+				configuration.setExposedHeaders(Arrays.asList("Authorization", "access", "refresh")); // 브라우저가 JS를 통해 읽게 해주는 해더
 
                 return configuration;
             }

@@ -1,24 +1,18 @@
 package com.sang.health.entity.user;
 
-import java.util.List;
-
 import org.hibernate.annotations.BatchSize;
 
-import com.sang.health.entity.board.Board;
-
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Entity
 @Data
+@BatchSize(size = 100)
 public class User {
 
     @Id
@@ -40,10 +34,6 @@ public class User {
 
     @Column(nullable = false)
     private String provider; // "LOCAL", "GOOGLE"
-    
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @BatchSize(size = 10)
-    private List<Board> boards;
 
     // 일반 로그인 사용자 생성 팩토리 메서드
     public static User createLocalUser(String username, String email, String password, String role) {

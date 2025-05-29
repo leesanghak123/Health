@@ -21,7 +21,7 @@ public class RedisUtil {
         this.redisTemplate = redisTemplate;
     }
     
-    // Refresh Token
+    // -- Refresh Token --
     // 생성
     public void saveRefreshToken(String username, String refreshToken, long expiredTime) {
     	// 브라우저 마다 관리: deviceId
@@ -37,17 +37,19 @@ public class RedisUtil {
     
     // 삭제
     public void deleteData(String key) {
+    	
         redisTemplate.delete(key);
     }
     
     // 존재하는지
     public boolean hasKey(String key) {
+    	
         return Boolean.TRUE.equals(redisTemplate.hasKey(key));
     }
     
     
     
-    // 조회수
+    // -- 조회수 --
     // 새 게시글이 작성되는 경우 (개별 저장)
     public void saveBoardView(Long boardId) {
         String key = "board:view:" + boardId;
@@ -111,7 +113,7 @@ public class RedisUtil {
     
     
     
-    // 추천수
+    // -- 추천수 --
     // 새 게시글이 작성되는 경우 초기화
     public void saveBoardLikeTotal(Long boardId) {
     	String key = "board:like:total:" + boardId;
@@ -169,7 +171,7 @@ public class RedisUtil {
         redisTemplate.opsForValue().set(key, "1");
     }
     
-    // 사용자 좋아요 삭제
+    // 사용자 추천 삭제
     public void deleteBoardLike(Long boardId, String username) {
         String key = "board:like:check:" + boardId + ":" + username;
         redisTemplate.delete(key);
