@@ -1,0 +1,93 @@
+name: Deploy To EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs: 
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Github Repository 파일 불러오기
+        uses: actions/checkout@v4
+
+      - name: JDK 17버전 설치
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: application.yml 파일 만들기
+        run: echo "${{ secrets.APPLICATION_PROPERTIES }}" > ./back_springBoot/src/main/resources/application.yml
+
+      - name: env 파일 만들기
+        run: echo "${{ secrets.FRONT_ENV }}" > ./front_vue/.env
+
+      - name: DB 자격증명(초기 세팅)
+        run: echo "${{ secrets.INIT_SQL }}" > ./mysql_init/init.sql
+
+      - name: Nginx_config 파일 만들기
+        run: echo "${{ secrets.NGINX_CONFIG }}" > ./front_vue/nginx.conf
+
+      - name: Spring Boot 빌드 (JAR 파일 생성)
+        run: |
+          cd back_springboot
+          ./mvnw clean package -DskipTests
+
+      - name: AWS Resource에 접근할 수 있게 AWS credentials 설정
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ap-northeast-2
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: ECR에 로그인하기
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Docker 이미지 생성 - spring
+        run: |
+          cd back_springboot
+          docker build -t springboot .
+
+      - name: Docker 이미지 생성 - vue
+        run: |
+          cd front_vue
+          docker build -t vue .
+
+      - name: Docker 이미지 생성 - ES
+        run: |
+          cd elasticsearch
+          docker build -t ES .
+
+      - name: Docker 이미지에 Tag 붙이기 - spring
+        run: docker tag springboot ${{ steps.login-ecr.outputs.registry }}/springboot:latest
+
+      - name: Docker 이미지에 Tag 붙이기 - vue
+        run: docker tag vue ${{ steps.login-ecr.outputs.registry }}/vue:latest
+
+      - name: Docker 이미지에 Tag 붙이기 - ES
+        run: docker tag ES ${{ steps.login-ecr.outputs.registry }}/ES:latest
+
+      - name: ECR에 이미지 Push - spring
+        run: docker push ${{ steps.login-ecr.outputs.registry }}/springboot:latest
+
+      - name: ECR에 이미지 Push - vue
+        run: docker push ${{ steps.login-ecr.outputs.registry }}/vue:latest
+       
+      - name: ECR에 이미지 Push - ES
+        run: docker push ${{ steps.login-ecr.outputs.registry }}/ES:latest
+
+      - name: 압축하기
+        run: tar -czvf $GITHUB_SHA.tar.gz appspec.yml scripts
+
+      - name: S3에 프로젝트 업로드
+        run: aws s3 cp --region ap-northeast-2 ./GITHUB_SHA.tar.gz s3://health.tar.gz
+
+      - name: Code Deploy에게 EC2에 배포하라고 하기
+        run: aws deploy create-deployment
+          --application-name health
+          --deployment-config-name CodeDeployDefault.AllAtOnce
+          --deployment-group-name Production
+          --s3-location bucket=health,bundleType=tgz,key=$GITHUB_SHA.tar.gz

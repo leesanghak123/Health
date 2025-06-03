@@ -70,7 +70,10 @@ JWT 인증, Redis 기반 캐싱, Elasticsearch 검색, Docker 기반 배포 등
 ---
 
 ## 📦 아키텍처
-![architecture](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FraIe1%2FbtsNh4PrxeT%2FEAy6ke9IwkyzvTudzVJbF0%2Fimg.png)
+![architecture](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdhYj2I%2FbtsOl0ckxuq%2Fcqx73GkiC6bXTScKvthqPK%2Fimg.png)
+
+## 🗂️ ERD
+![ERD](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FH0Awu%2FbtsOlPhMSwy%2FzNi24rYVhZB4tNkaBOvMsk%2Fimg.png)
 
 ## 🎨 UI
 | 회원가입 | 로그인 | 메인화면 |

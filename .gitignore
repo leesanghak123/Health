@@ -1,16 +1,31 @@
-# MySQL 데이터는 Git에 올리지 않음
+# ----- MySQL -----
+# local에서 테스트한 volumn Data
 mysql_data/
 
-# 운영체제별 쓰레기 파일
-.DS_Store
-Thumbs.db
+# DB 자격 증명
+mysql_init/init.sql
 
-# IDE 설정 (예: IntelliJ, VSCode 등)
-.idea/
-.vscode/
+# ----- Spring Boot -----
+# yml 파일
+back_springBoot/src/main/resources/application.yml
 
-# 로그파일 무시
-*.log
+# Maven 빌드 결과물 (빌드할 때마다 생성할 것이니 ignore)
+back_springBoot/target/
 
-# 환경 변수 파일 무시
-/.env
+# Eclipse IDE 설정 관련 파일
+back_springBoot/.settings/
+back_springBoot/.project
+back_springBoot/.classpath
+
+# ----- Vue -----
+# env파일
+front_vue/.env
+
+# 빌드 결과물 (빌드할 때마다 생성할 것이니 ignore)
+front_vue/dist/
+
+# 외부 라이브러리들 (용량이 커서 Git 저장소 크기, 충돌 등 문제, 빌드 과정에서 새로 다운받기)
+front_vue/node_modules/
+
+# Nginx 서빙 부분으로 URL 부분 Github에서 수정
+front_vue/nginx.conf

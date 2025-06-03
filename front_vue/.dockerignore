@@ -1,8 +1,6 @@
+# 빌드 시점에 다시 생성되는 파일
 node_modules
 dist
+
 *.log
 *.tmp
-.DS_Store
-.git
-.vscode
-package-lock.json
