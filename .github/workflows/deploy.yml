@@ -77,7 +77,7 @@ jobs:
         run: docker tag vue ${{ steps.login-ecr.outputs.registry }}/vue:latest
 
       - name: Docker 이미지에 Tag 붙이기 - ES
-        run: docker tag ES ${{ steps.login-ecr.outputs.registry }}/es:latest
+        run: docker tag es ${{ steps.login-ecr.outputs.registry }}/es:latest
 
       - name: ECR에 이미지 Push - spring
         run: docker push ${{ steps.login-ecr.outputs.registry }}/springboot:latest
