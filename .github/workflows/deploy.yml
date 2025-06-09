@@ -36,6 +36,9 @@ jobs:
       - name: Nginx_config 파일 만들기
         run: echo "${{ secrets.NGINX_CONFIG }}" > ./front_vue/nginx.conf
 
+      - name: Maven Wrapper 실행 권한 부여
+        run: chmod +x ./back_springBoot/mvnw
+
       - name: Spring Boot 빌드 (JAR 파일 생성)
         run: |
           cd back_springBoot
