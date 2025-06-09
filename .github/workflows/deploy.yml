@@ -57,7 +57,7 @@ jobs:
 
       - name: Docker 이미지 생성 - spring
         run: |
-          cd back_springboot
+          cd back_springBoot
           docker build -t springboot .
 
       - name: Docker 이미지 생성 - vue
