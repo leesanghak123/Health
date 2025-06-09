@@ -92,7 +92,7 @@ jobs:
         run: tar -czvf $GITHUB_SHA.tar.gz appspec.yml scripts
 
       - name: S3에 프로젝트 업로드
-        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.tar.gz s3://health-bucket01.tar.gz
+        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.tar.gz s3://health-bucket01/${GITHUB_SHA}.tar.gz
 
       - name: Code Deploy에게 EC2에 배포하라고 하기
         run: aws deploy create-deployment
