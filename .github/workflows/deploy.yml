@@ -38,7 +38,7 @@ jobs:
 
       - name: Spring Boot 빌드 (JAR 파일 생성)
         run: |
-          cd back_springboot
+          cd back_springBoot
           ./mvnw clean package -DskipTests
 
       - name: AWS Resource에 접근할 수 있게 AWS credentials 설정
