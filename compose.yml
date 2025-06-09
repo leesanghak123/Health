@@ -1,6 +1,6 @@
 services:
   my-springboot-health:
-    image: {ECR Repository 주소}/springboot:latest
+    image: 992382367281.dkr.ecr.ap-northeast-2.amazonaws.com/springboot:latest
     ports:
       - 8002:8002
     volumes:
@@ -42,7 +42,7 @@ services:
       retries: 10
       
   my-elastic:
-    image: {ECR Repository 주소}/elasticsearch:latest
+    image: 992382367281.dkr.ecr.ap-northeast-2.amazonaws.com/es:latest
     ports:
       - 9200:9200
       - 9300:9300
@@ -55,13 +55,13 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - ./dict:/usr/share/elasticsearch/config/dict
     healthcheck:
-      test: ["CMD-SHELL", "curl -s -f http://localhost:9200 || exit 1"]
+      test: ["CMD-SHELL", "curl -s -f http://3.34.45.205:9200 || exit 1"]
       interval: 5s
       retries: 10
       start_period: 20s
   
   my-vue:
-    image: {ECR Repository 주소}/vue:latest
+    image: 992382367281.dkr.ecr.ap-northeast-2.amazonaws.com/vue:latest
     ports:
       - 8003:8003
     volumes:

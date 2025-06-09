@@ -70,8 +70,12 @@ public class SecurityConfig {
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
 
                 CorsConfiguration configuration = new CorsConfiguration();
-
-                configuration.setAllowedOrigins(Collections.singletonList("http://localhost:8003")); // 허용할 port
+                
+                // 허용할 port
+                configuration.setAllowedOrigins(Arrays.asList(
+                	    "http://localhost:8003", // 로컬 개발용
+                	    "https://3.34.45.205:8003" // 배포용
+                ));
                 configuration.setAllowedMethods(Collections.singletonList("*")); // 허용할 method(Get, Post 등)
                 configuration.setAllowCredentials(true); // 자격 증명(예: CORS 도메인 쿠키 전송) 허용
                 configuration.setAllowedHeaders(Collections.singletonList("*")); // 허용할 헤더

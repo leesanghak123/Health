@@ -59,7 +59,7 @@ jobs:
       - name: Docker 이미지 생성 - ES
         run: |
           cd elasticsearch
-          docker build -t ES .
+          docker build -t es .
 
       - name: Docker 이미지에 Tag 붙이기 - spring
         run: docker tag springboot ${{ steps.login-ecr.outputs.registry }}/springboot:latest
@@ -68,7 +68,7 @@ jobs:
         run: docker tag vue ${{ steps.login-ecr.outputs.registry }}/vue:latest
 
       - name: Docker 이미지에 Tag 붙이기 - ES
-        run: docker tag ES ${{ steps.login-ecr.outputs.registry }}/ES:latest
+        run: docker tag ES ${{ steps.login-ecr.outputs.registry }}/es:latest
 
       - name: ECR에 이미지 Push - spring
         run: docker push ${{ steps.login-ecr.outputs.registry }}/springboot:latest
@@ -77,17 +77,17 @@ jobs:
         run: docker push ${{ steps.login-ecr.outputs.registry }}/vue:latest
        
       - name: ECR에 이미지 Push - ES
-        run: docker push ${{ steps.login-ecr.outputs.registry }}/ES:latest
+        run: docker push ${{ steps.login-ecr.outputs.registry }}/es:latest
 
       - name: 압축하기
         run: tar -czvf $GITHUB_SHA.tar.gz appspec.yml scripts
 
       - name: S3에 프로젝트 업로드
-        run: aws s3 cp --region ap-northeast-2 ./GITHUB_SHA.tar.gz s3://health.tar.gz
+        run: aws s3 cp --region ap-northeast-2 ./GITHUB_SHA.tar.gz s3://health-bucket01.tar.gz
 
       - name: Code Deploy에게 EC2에 배포하라고 하기
         run: aws deploy create-deployment
           --application-name health
           --deployment-config-name CodeDeployDefault.AllAtOnce
           --deployment-group-name Production
-          --s3-location bucket=health,bundleType=tgz,key=$GITHUB_SHA.tar.gz
+          --s3-location bucket=health-bucket01,bundleType=tgz,key=$GITHUB_SHA.tar.gz
