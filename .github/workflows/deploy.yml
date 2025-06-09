@@ -21,6 +21,9 @@ jobs:
       - name: application.yml의 상위 디렉터리 생성 (resources는 git의 관리 제외 대상)
         run: mkdir -p ./back_springBoot/src/main/resources
 
+      - name: mysql_init 디렉터리 생성
+        run: mkdir -p ./mysql_init
+
       - name: application.yml 파일 만들기
         run: echo "${{ secrets.APPLICATION_PROPERTIES }}" > ./back_springBoot/src/main/resources/application.yml
 
