@@ -12,7 +12,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
 public class MetaDBConfig {
-
+ 
     @Primary
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource-meta")
