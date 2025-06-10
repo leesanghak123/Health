@@ -90,7 +90,7 @@ jobs:
         run: docker push ${{ steps.login-ecr.outputs.registry }}/es:latest
 
       - name: 압축하기
-        run: tar -czvf $GITHUB_SHA.tar.gz appspec.yml scripts compose.yml
+        run: tar -czvf $GITHUB_SHA.tar.gz appspec.yml scripts compose.yml mysql_init
 
       - name: S3에 프로젝트 업로드
         run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.tar.gz s3://health-bucket01/${GITHUB_SHA}.tar.gz
