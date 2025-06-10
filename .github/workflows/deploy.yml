@@ -24,9 +24,6 @@ jobs:
       - name: mysql_init 디렉터리 생성
         run: mkdir -p ./mysql_init
 
-      - name: es 사전 생성
-        run: mkdir -p ./dict
-
       - name: application.yml 파일 만들기
         run: echo "${{ secrets.APPLICATION_PROPERTIES }}" > ./back_springBoot/src/main/resources/application.yml
 
@@ -38,12 +35,6 @@ jobs:
 
       - name: Nginx_config 파일 만들기
         run: echo "${{ secrets.NGINX_CONFIG }}" > ./front_vue/nginx.conf
-
-      - name: Elasticsearch 사전 파일 만들기 - synonym
-        run: echo "${{ secrets.ES_SYNONYM_DICT }}" > ./dict/synonym-set.txt
-
-      - name: Elasticsearch 사전 파일 만들기 - userdict
-        run: echo "${{ secrets.ES_USERDICT_KO }}" > ./dict/userdict_ko.txt
 
       - name: Maven Wrapper 실행 권한 부여
         run: chmod +x ./back_springBoot/mvnw
@@ -90,7 +81,6 @@ jobs:
 
       - name: ECR에 이미지 Push - spring
         run: docker push ${{ steps.login-ecr.outputs.registry }}/springboot:latest
-
         
       - name: ECR에 이미지 Push - vue
         run: docker push ${{ steps.login-ecr.outputs.registry }}/vue:latest
