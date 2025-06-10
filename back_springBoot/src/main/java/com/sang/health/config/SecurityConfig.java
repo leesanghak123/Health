@@ -74,7 +74,7 @@ public class SecurityConfig {
                 // 허용할 port
                 configuration.setAllowedOrigins(Arrays.asList(
                 	    "http://localhost:8003", // 로컬 개발용
-                	    "http://3.34.45.205:8003" // 배포용
+                	    "http://54.180.24.52:8003" // 배포용
                 ));
                 configuration.setAllowedMethods(Collections.singletonList("*")); // 허용할 method(Get, Post 등)
                 configuration.setAllowCredentials(true); // 자격 증명(예: CORS 도메인 쿠키 전송) 허용
