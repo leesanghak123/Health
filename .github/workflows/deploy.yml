@@ -82,6 +82,7 @@ jobs:
       - name: ECR에 이미지 Push - spring
         run: docker push ${{ steps.login-ecr.outputs.registry }}/springboot:latest
 
+        
       - name: ECR에 이미지 Push - vue
         run: docker push ${{ steps.login-ecr.outputs.registry }}/vue:latest
        
