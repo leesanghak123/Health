@@ -4,7 +4,7 @@ const { defineConfig } = require('@vue/cli-service')
 
 // module.exports: 파일을 외부(다른 파일)에서 사용 가능하게 만드는 부분
 module.exports = defineConfig({
-  publicPath: './',  // 정적 리소스를 상대경로로 로딩 (배포 시)
+  publicPath: '/',  // 정적 리소스를 절대경로로 로딩 (배포 시)
 
   transpileDependencies: true, // 외부 라이브러리 코드도 최신 JS 문법으로 변환
   
