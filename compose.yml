@@ -29,6 +29,7 @@ services:
       interval: 5s
       retries: 10
       
+      
   my-redis:
     image: redis
     ports:
