@@ -15,6 +15,7 @@
         <p v-if="errorMessage" class="text-danger mt-2">{{ errorMessage }}</p>
       </form>
 
+      
       <!-- 소셜 로그인 이미지 버튼 -->
       <div class="d-flex justify-content-between mt-3">
         <a @click="handleSocialLogin('naver')" class="w-48">
