@@ -44,7 +44,7 @@ JWT 인증, Redis 기반 캐싱, Elasticsearch 검색, Docker 기반 배포 등
 
 ### 📦 DevOps
 - **Docker**
-- **ECR** → **EC2 배포**
+- **GitHub Repository** → **GitHub Actions** → **CodeDeploy & S3 & ECR** → **EC2**
 
 ---
 
