@@ -1,19 +1,19 @@
-version: 0.0
-os: linux
+# version: 0.0
+# os: linux
 
-files:
-  # CodeDeploy가 S3로부터 가져온 파일 중 destination으로 이동시킬 대상을 지정한다.
-  # /: S3로부터 가져온 전체 파일
-  - source: /
-    destination: /home/ubuntu/health
+# files:
+#   # CodeDeploy가 S3로부터 가져온 파일 중 destination으로 이동시킬 대상을 지정한다.
+#   # /: S3로부터 가져온 전체 파일
+#   - source: /
+#     destination: /home/ubuntu/health
 
-permissions:
-  - object: /home/ubuntu/health
-    owner: ubuntu
-    group: ubuntu
+# permissions:
+#   - object: /home/ubuntu/health
+#     owner: ubuntu
+#     group: ubuntu
 
-hooks:
-  ApplicationStart:
-    - location: scripts/start-server.sh
-      timeout: 300
-      runas: ubuntu
+# hooks:
+#   ApplicationStart:
+#     - location: scripts/start-server.sh
+#       timeout: 300
+#       runas: ubuntu

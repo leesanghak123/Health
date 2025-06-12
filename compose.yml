@@ -1,17 +1,18 @@
 services:
-  my-springboot-health:
-    image: 992382367281.dkr.ecr.ap-northeast-2.amazonaws.com/springboot:latest
-    ports:
-      - 8002:8002
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-    depends_on:
-      my-mysql:
-        condition: service_healthy
-      my-redis:
-        condition: service_healthy
-    restart: unless-stopped  # 실패 시 자동 재시도
+#   my-springboot-health:
+#     build:
+#         context: ./back_springBoot
+#     ports:
+#       - 8002:8002
+#     volumes:
+#       - /etc/localtime:/etc/localtime:ro
+#       - /etc/timezone:/etc/timezone:ro
+#     depends_on:
+#       my-mysql:
+#         condition: service_healthy
+#       my-redis:
+#         condition: service_healthy
+#     restart: unless-stopped  # 실패 시 자동 재시도
         
   my-mysql:
     image: mysql
@@ -42,7 +43,8 @@ services:
       retries: 10
       
   my-elastic:
-    image: 992382367281.dkr.ecr.ap-northeast-2.amazonaws.com/es:latest
+    build:
+      context: ./elasticsearch
     ports:
       - 9200:9200
       - 9300:9300
@@ -55,15 +57,16 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - ./dict:/usr/share/elasticsearch/config/dict
     healthcheck:
-      test: ["CMD-SHELL", "curl -s -f http://my-elastic:9200 || exit 1"]
+      test: ["CMD-SHELL", "curl -s -f http://localhost:9200 || exit 1"]
       interval: 5s
       retries: 10
       start_period: 20s
   
-  my-vue:
-    image: 992382367281.dkr.ecr.ap-northeast-2.amazonaws.com/vue:latest
-    ports:
-      - 8003:8003
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro 
+  # my-vue:
+  #   build:
+  #       context: ./front_vue
+  #   ports:
+  #     - 8003:8003
+  #   volumes:
+  #     - /etc/localtime:/etc/localtime:ro
+  #     - /etc/timezone:/etc/timezone:ro 
