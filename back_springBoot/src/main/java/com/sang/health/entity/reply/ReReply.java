@@ -9,10 +9,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class ReReply {
 	
 	@Id
@@ -30,4 +34,10 @@ public class ReReply {
 	
 	@CreationTimestamp
 	private Timestamp createDate;
+	
+	public ReReply(String content, String username, Long replyid) {
+	    this.content = content;
+	    this.username = username;
+	    this.replyid = replyid;
+	}
 }
