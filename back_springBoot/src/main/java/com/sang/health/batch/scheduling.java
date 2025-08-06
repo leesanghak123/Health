@@ -21,8 +21,8 @@ public class scheduling {
         this.jobRegistry = jobRegistry;
     }
 
-    // ES 배치 작업 - 매일 자정
-    @Scheduled(cron = "0 12 13 * * *", zone = "Asia/Seoul")
+    // ES 배치 작업 - 매일 오후 4시 42분
+    @Scheduled(cron = "0 42 16 * * *", zone = "Asia/Seoul")
     public void runESJob() throws Exception {
         System.out.println("ES batch job starting at " + new Date());
         

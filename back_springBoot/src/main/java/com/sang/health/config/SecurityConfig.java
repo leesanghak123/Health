@@ -126,6 +126,19 @@ public class SecurityConfig {
 		// 세션 설정
 		http.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
+		// CSP 설정 추가
+		http.headers(headers -> headers
+				.contentSecurityPolicy(csp -> csp
+						.policyDirectives("default-src 'self';" +
+										  "script-src 'self' 'unsafe-inline';" +
+										  "style-src 'self' 'unsafe-inline';" + 
+										  "img-src 'self' data: https:;" +
+										  "font-src 'self' https:;" +
+										  "connect-src 'self' http://localhost:8003 http://13.209.35.255:8003;"
+										  )
+				)
+		);
+		
 		return http.build();
 	}
 }

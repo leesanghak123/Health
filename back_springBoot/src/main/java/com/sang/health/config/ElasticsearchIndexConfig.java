@@ -98,8 +98,8 @@ public class ElasticsearchIndexConfig {
 
                 // 기본 설정
                 Map<String, Object> settings = Map.of(
-                    "number_of_shards", 1,
-                    "number_of_replicas", 0,
+                    "number_of_shards", 2,
+                    "number_of_replicas", 2,
                     "analysis", analysis
                 );
 

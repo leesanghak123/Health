@@ -12,4 +12,5 @@ public interface BoardRepository extends JpaRepository<Board, Long>{
 	// Elastic 배치 시 사용
 	//@EntityGraph(attributePaths = "user")  // user를 즉시 로딩
     Page<Board> findAll(Pageable pageable);
+    
 }

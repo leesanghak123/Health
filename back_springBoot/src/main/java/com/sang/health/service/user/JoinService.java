@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sang.health.dto.user.JoinDto;
 import com.sang.health.entity.user.User;
 import com.sang.health.repository.user.UserRepository;
+import com.sang.health.util.HtmlSanitizerUtil;
 
 @Service
 public class JoinService {
@@ -21,11 +22,12 @@ public class JoinService {
 	
 	@Transactional
 	public void joinProcess(JoinDto joinDto) {
-		String username = joinDto.getUsername();
+		// Sanitizer로 정제
+		String sanitizedUsername = HtmlSanitizerUtil.sanitize(joinDto.getUsername());
+		String sanitizedEmail = HtmlSanitizerUtil.sanitize(joinDto.getEmail());
 		String password = joinDto.getPassword();
-		String email = joinDto.getEmail();
 		
-		Boolean isExist = userRepository.existsByUsername(username);
+		Boolean isExist = userRepository.existsByUsername(sanitizedUsername);
 		
 		// 회원가입이 된 경우
 		if(isExist) {
@@ -34,8 +36,8 @@ public class JoinService {
 		
 		// 팩토리 메서드를 사용하여 User 객체 생성
         User user = User.createLocalUser(
-            username,
-            email,
+        	sanitizedUsername,
+        	sanitizedEmail,
             bCryptPasswordEncoder.encode(password),
             "ROLE_USER"
         );

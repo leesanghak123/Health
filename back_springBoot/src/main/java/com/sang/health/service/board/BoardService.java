@@ -30,6 +30,7 @@ import com.sang.health.repository.board.BoardRepository;
 import com.sang.health.repository.reply.ReReplyRepositoy;
 import com.sang.health.repository.reply.ReplyRepository;
 import com.sang.health.repository.user.UserRepository;
+import com.sang.health.util.HtmlSanitizerUtil;
 import com.sang.health.util.RedisUtil;
 
 @Service
@@ -86,10 +87,14 @@ public class BoardService {
 		User user = userRepository.findByUsername(username)
 				.orElseThrow(() -> new IllegalArgumentException("User not found: " + username));
 		
+		// Sanitizer로 정제
+		String sanitizedTitle = HtmlSanitizerUtil.sanitize(boardWriteDto.getTitle());
+        String sanitizedContent = HtmlSanitizerUtil.sanitize(boardWriteDto.getContent());
+        
 		// DB 저장
 		Board board = new Board();
-		board.setTitle(boardWriteDto.getTitle());
-        board.setContent(boardWriteDto.getContent());
+		board.setTitle(sanitizedTitle);
+        board.setContent(sanitizedContent);
         board.setUser(user); // 연관 사용자 설정
         
         Board savedBoard = boardRepository.save(board);
@@ -97,8 +102,8 @@ public class BoardService {
         // Elasticsearch 저장
         BoardES boardES = new BoardES();
         boardES.setId(savedBoard.getId()); // Board의 ID를 문자열로 변환하여 설정
-        boardES.setTitle(savedBoard.getTitle());
-        boardES.setContent(savedBoard.getContent());
+        boardES.setTitle(sanitizedTitle);
+        boardES.setContent(sanitizedContent);
         boardES.setUsername(username);
         boardES.setCreateDate(Timestamp.from(savedBoard.getCreateDate().toInstant()));
         boardESRepository.save(boardES);
@@ -182,17 +187,21 @@ public class BoardService {
             throw new IllegalArgumentException("본인의 글만 수정할 수 있습니다.");
         }
 		
+		// Sanitizer로 정제
+        String sanitizedTitle = HtmlSanitizerUtil.sanitize(boardWriteDto.getTitle());
+        String sanitizedContent = HtmlSanitizerUtil.sanitize(boardWriteDto.getContent());
+		
 		// DB
-		board.setTitle(boardWriteDto.getTitle());
-		board.setContent(boardWriteDto.getContent());
+		board.setTitle(sanitizedTitle);
+		board.setContent(sanitizedContent);
 		boardRepository.save(board);
 		
 		// Elasticsearch
 	    Optional<BoardES> boardESOptional = boardESRepository.findById(id);
 	    if (boardESOptional.isPresent()) {
 	        BoardES boardES = boardESOptional.get();
-	        boardES.setTitle(boardWriteDto.getTitle());
-	        boardES.setContent(boardWriteDto.getContent());
+	        boardES.setTitle(sanitizedTitle);
+	        boardES.setContent(sanitizedContent);
 	        boardESRepository.save(boardES);
 	    } else {
 	    	System.out.println("Elasticsearch에 해당 ID의 게시글이 없음.");

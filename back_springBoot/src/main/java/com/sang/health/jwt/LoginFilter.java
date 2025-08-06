@@ -76,7 +76,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 	    String role = auth.getAuthority();
 
 	    // 토큰 생성
-	    String access = jwtUtil.createJwt("access", username, role, 6000L); // 10분 (현재 6초)
+	    String access = jwtUtil.createJwt("access", username, role, 600000L); // 10분 (현재 600초)
 	    String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
 	    redisUtil.saveRefreshToken(username+deviceId, refresh, 86400000L);
 	    response.setHeader("access", access);
@@ -85,6 +85,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 	    response.addCookie(jwtUtil.createDeviceIdCookie(deviceId));
 	    
 	    System.out.println("로그인 : ");
+	    System.out.println("Token: " + access);
 	    
 	    // 응답 설정
 	    response.setStatus(HttpStatus.OK.value());

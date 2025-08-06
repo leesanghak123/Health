@@ -11,6 +11,7 @@ import com.sang.health.repository.board.BoardRepository;
 import com.sang.health.repository.reply.ReReplyRepositoy;
 import com.sang.health.repository.reply.ReplyRepository;
 import com.sang.health.repository.user.UserRepository;
+import com.sang.health.util.HtmlSanitizerUtil;
 
 @Service
 public class ReplyService {
@@ -36,10 +37,13 @@ public class ReplyService {
 		userRepository.findByUsername(username)
 				.orElseThrow(() -> new IllegalArgumentException("User not found: " + username));
 		
+		// Sanitizer로 정제
+		String sanitizedContent = HtmlSanitizerUtil.sanitize(replyWriteDto.getContent());
+		
 		Reply reply = new Reply();
 	    reply.setBoardid(replyWriteDto.getBoardid());
 	    reply.setUsername(username);
-	    reply.setContent(replyWriteDto.getContent());
+	    reply.setContent(sanitizedContent);
 	    
 	    replyRepository.save(reply);
 	}
@@ -53,10 +57,13 @@ public class ReplyService {
 		userRepository.findByUsername(username)
 				.orElseThrow(() -> new IllegalArgumentException("User not found: " + username));
 		
+		// Sanitizer로 정제
+		String sanitizedContent = HtmlSanitizerUtil.sanitize(rereplyWriteDto.getContent());
+		
 		ReReply rereply = new ReReply();
 		rereply.setReplyid(rereplyWriteDto.getReplyid());
 		rereply.setUsername(username);
-		rereply.setContent(rereplyWriteDto.getContent());
+		rereply.setContent(sanitizedContent);
 		
 		reReplyRepositoy.save(rereply);
 	}
